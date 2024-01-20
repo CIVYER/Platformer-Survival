@@ -16,7 +16,7 @@ function getRandomInt(min, max) {
 }
 let go = false;
 class Player{
-    constructor({position, collisionBlocks}){
+    constructor({position, collisionBlocks, weapon}){
         this.height = 50;
         this.width = 50;
         this.color = 'blue';
@@ -38,8 +38,10 @@ class Player{
         this.left = this.position.x;
         this.right = this.position.x + this.width;
 
+        this.weapon = weapon;
         this.onGround = false;
         this.hasWeapon = false;
+        this.shot = false;
 
         this.collisionBlocks = collisionBlocks;
     }
@@ -76,7 +78,13 @@ class Player{
             this.velocity.y = 3
             this.onGround = false;
         }
-        
+        if(!(this.hasWeapon) && normal_collision({
+            object1:this,
+            object2:this.weapon
+        })){
+            this.weapon.color = 'black';
+            this.hasWeapon = true;
+        }
     }
     fall(){
         this.position.y += this.velocity.y;
@@ -148,6 +156,10 @@ class Platform{
         this.right = this.position.x + this.width;
         
         this.scrollDown()
+        if(player.hasWeapon == false && weapon.spawnW){
+            weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
+            weapon.position.y =  collisionBlocks[0].top-50;
+        }
     }
 
     scrollDown(){
@@ -157,16 +169,22 @@ class Platform{
                 partner = this.plats[this.plats.length - this.num-1];
             }
             this.position.y += scrollSpeed;
-            if(this.top > canvas.height){
+            if(this.top > canvas.height+50){
                 this.position.y = partner.top - 200;
-                this.width = 200
+                this.width = 250
                 if(this.position.pos == 'left'){
-                    this.position.x = getRandomInt(0, (canvas.width/2)+50);
+                    this.position.x = getRandomInt(0, (canvas.width/2)+25);
                 }
                 else if(this.position.pos == 'right'){
-                    this.position.x = getRandomInt((canvas.width/2)-50, canvas.width-200)
+                    this.position.x = getRandomInt((canvas.width/2)-25, canvas.width-200)
                 }
                 this.height = 7
+
+                if(this.num  == 0 && player.hasWeapon == false){
+                    weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
+                    weapon.position.y =  collisionBlocks[0].top-50;
+                    weapon.spawnW = true;
+                }
             }
             go = true
         }
@@ -184,6 +202,13 @@ class Weapon{
         this.height = 50;
         this.color = 'black';
         this.angle = 0;
+
+        this.top = this.position.y;
+        this.bottom = this.position.y + this.height;
+        this.left = this.position.x;
+        this.right = this.position.x + this.width;
+
+        this.spawnW = false;
     }
     draw(){
         c.beginPath();
@@ -213,7 +238,18 @@ class Weapon{
         c.restore();
     }
     update(){
-        this.drawImageRot();
+        if(this.player.hasWeapon){
+            this.position.x = this.player.position.x+player.width/2-10,
+            this.position.y = this.player.position.y+player.height/2,
+            this.drawImageRot();
+        }
+        else{
+            this.draw();
+            this.top = this.position.y;
+            this.bottom = this.position.y + this.height;
+            this.left = this.position.x;
+            this.right = this.position.x + this.width;
+        }
     }
 }
 
@@ -234,7 +270,6 @@ class Bullet{
         this.angles = angle;
         this.radius = 0;
         this.color = 'green';
-        this.shot = false;
     }
 
     draw(){
@@ -274,7 +309,6 @@ class Bullet{
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-        this.shoot()
     }
     
     shoot(){
@@ -314,7 +348,7 @@ for (let i = 0; i < 10; i++) {
             pos:'left'
         },
         height:7,
-        width:200,
+        width:250,
         num:i,
         plats:collisionBlocks
     }))
@@ -327,11 +361,19 @@ for (let i = 0; i < 10; i++) {
             pos:'right'
         },
         height:7,
-        width:200,
+        width:250,
         num:i,
         plats:collisionBlocks
     }))
 }
+
+// weapon spawning
+const weapon = new Weapon({
+    position:{
+        x:collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20,
+        y:collisionBlocks[9].top - 50
+    }
+});
 
 // player spawning
 const player = new Player({
@@ -342,8 +384,24 @@ const player = new Player({
     collisionBlocks:{
         first:collisionBlocks,
         sec:collisionBlocks2
-    }
+    },
+    weapon:weapon
 });
+
+weapon.player = player;
+
+let bullet = [];
+for (let i = 0; i < 5; i++) {
+    bullet.push(new Bullet({
+        position:{
+            x:weapon.position.x,
+            y:weapon.position.y
+        },
+        angle:weapon.angle,
+        player:player
+    }));
+}
+
 
 //player and vars
 var key_pressed = {
@@ -351,21 +409,19 @@ var key_pressed = {
     a:false,
     s:false,
     d:false,
+    r:false,
     mouseLeftClick:false,
 };
-var weapon;
-let targetX;
-let targetY;
-let bullet;
-let start, testTime;
+
+let inChamber = 0;
+let start, bulletDelay;
 // The game Loop 
 function game_loop(timeStamp){
     if (start === undefined) {
         start = timeStamp;
-        testTime = timeStamp;
+        bulletDelay = timeStamp;
     }
     const elapsed = timeStamp - start;
-    // console.log(testTime+5000, elapsed);
 
 
     requestAnimationFrame(game_loop);
@@ -380,28 +436,19 @@ function game_loop(timeStamp){
     }
     player.update();
     if(player.hasWeapon){
-        bullet.update();
-        weapon.update();
+        for (let i = 0; i < bullet.length; i++) {
+            bullet[i].update();
+        }
     }
     else{
-        weapon = new Weapon({
-            position:{
-                x:player.position.x+player.width/2-10,
-                y:player.position.y+player.height/2,
-            },
-            player:player
-        });
-        bullet = new Bullet({
-            position:{
-                x:weapon.position.x,
-                y:weapon.position.y
-            },
-            angle:weapon.angle,
-            player:player
-        });
-
-        player.hasWeapon = true;
+        if(go){
+            // weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
+            // weapon.position.y =  collisionBlocks[0].top-50;
+            weapon.color = 'yellow';
+        }
     }
+    weapon.update();
+
     if(key_pressed.w && player.onGround){
         player.velocity.y = -13;
         player.onGround = false;
@@ -413,13 +460,61 @@ function game_loop(timeStamp){
     else if(key_pressed.d){
         player.velocity.x = 5;
     }
-    if(key_pressed.mouseLeftClick && bullet.shot == false){
-        testTime = elapsed;
-        bullet.shot = true;
+    else if(key_pressed.r && inChamber >= bullet.length){
+        inChamber = 0;
+        weapon.color = 'green';
+        setTimeout(() => {
+            weapon.color = 'black';
+        }, 500);
+    }
+    if(key_pressed.mouseLeftClick && player.shot == false && inChamber < bullet.length && player.hasWeapon){
+        bullet[inChamber].shoot();
+        inChamber++;
+        bulletDelay = elapsed;
+        player.shot = true;
+    }
+    if(inChamber >= bullet.length){
+        weapon.color = 'red';
+    }
+    
+    if(bulletDelay+500 < elapsed){
+        player.shot = false;
     }
 
-    if(testTime+500 < elapsed){
-        bullet.shot = false;
+    if(player.top >= canvas.height){
+        go = false;
+        collisionBlocks = [];
+        collisionBlocks2 = [];
+        player.position.x=canvas.width/2,
+        player.position.y=canvas.height-100
+        player.hasWeapon = false;
+        weapon.spawnW = false;
+        for (let i = 0; i < 10; i++) {
+            collisionBlocks.push(    new Platform({
+                position:{
+                    x:((canvas.width/2)-200)/2,
+                    y:canvas.height - (10+(100*(i))),
+                    pos:'left'
+                },
+                height:7,
+                width:250,
+                num:i,
+                plats:collisionBlocks
+            }))
+        }
+        for (let i = 0; i < 10; i++) {
+            collisionBlocks2.push(    new Platform({
+                position:{
+                    x:(canvas.width/1.2)-200,
+                    y:canvas.height - (10+(100*(i))),
+                    pos:'right'
+                },
+                height:7,
+                width:250,
+                num:i,
+                plats:collisionBlocks
+            }))
+        }
     }
 }
 game_loop();
@@ -435,6 +530,9 @@ window.addEventListener('keypress', (e)=>{
     if(String(e.key).toLowerCase() == 'd'){
         key_pressed.d = true;
     }
+    if(String(e.key).toLowerCase() == 'r'){
+        key_pressed.r = true;
+    }
 });
 window.addEventListener('keyup', (e)=>{
     if(String(e.key).toLowerCase() == 'w'){
@@ -446,6 +544,9 @@ window.addEventListener('keyup', (e)=>{
     if(String(e.key).toLowerCase() == 'd'){
         key_pressed.d = false;
     }
+    if(String(e.key).toLowerCase() == 'r'){
+        key_pressed.r = false;
+    }
 });
 
 function collision({object1, object2}){
@@ -455,17 +556,26 @@ function collision({object1, object2}){
     && object1.right >= object2.left
     );
 }
+function normal_collision({object1, object2}){
+    return(object1.bottom >= object2.top
+    && object1.top <= object2.bottom
+    && object1.left <= object2.right
+    && object1.right >= object2.left
+    );
+}
 window.addEventListener('mousemove',(e)=>{
     mouseX = e.clientX-Math.abs((window.innerWidth-canvas.width)/2);
     mouseY = e.clientY-Math.abs((window.innerHeight-canvas.height)/2);
 });
 window.addEventListener('mousedown',(e)=>{
-    key_pressed.mouseLeftClick = true;
-    targetX = e.clientX-Math.abs((window.innerWidth-canvas.width)/2);
-    targetY = e.clientY-Math.abs((window.innerHeight-canvas.height)/2);
+    if(e.button == 0){
+        key_pressed.mouseLeftClick = true;
+    }
 });
 window.addEventListener('mouseup',(e)=>{
-    key_pressed.mouseLeftClick = false;
+    if(e.buttons == 0){
+        key_pressed.mouseLeftClick = false;
+    }
 });
 
 function drawImageRot(x,y,width,height){
