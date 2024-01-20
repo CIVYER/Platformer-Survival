@@ -1,0 +1,30 @@
+html, body{
+    height: 100svh;
+}
+*{
+    margin: 0;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100%;
+    width: 100%;
+
+}
+
+#canvas_container{
+    /* flex: 1; */
+
+    height: 80%;
+    width: 80%;
+
+    border: 1px solid black;
+}
