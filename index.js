@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas');
 const canvas_container = document.getElementById('canvas_container');
 const c = canvas.getContext('2d');
 
-const gravity = 0.5;
+const gravity = 1;
 const scrollSpeed = 3;
 
 canvas.height = canvas_container.getBoundingClientRect().height;
@@ -14,381 +14,27 @@ let mouseY
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;;
 }
-let go = false;
-class Player{
-    constructor({position, collisionBlocks, weapon}){
-        this.height = 50;
-        this.width = 50;
-        this.color = 'blue';
-        this.position = {
-            x:position.x,
-            y:position.y
-        };
-        this.center = {
-            x:this.position.x + (this.width/2),
-            y:this.position.y + (this.height/2)
-        }
-        this.velocity = {
-            x:0,
-            y:1
-        }
-
-        this.top = this.position.y;
-        this.bottom = this.position.y + this.height;
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
-
-        this.weapon = weapon;
-        this.onGround = false;
-        this.hasWeapon = false;
-        this.shot = false;
-
-        this.collisionBlocks = collisionBlocks;
-    }
-
-    draw(){
-        c.beginPath();
-        c.rect(this.position.x, this.position.y, this.width, this.height);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    }
-
-    update(){
-        this.draw();
-
-        this.center.x = this.position.x + (this.width/2);
-        this.center.y = this.position.y + (this.height/2);
-        
-        this.position.x += this.velocity.x;
-        
-        this.fall();
-        this.cVertCol();
-        //sets the sides coordinate per frame
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
-        this.bottom = this.position.y + this.height;
-        this.top = this.position.y;
-
-        if (this.bottom + this.velocity.y + 1 > canvas.height && go == false) {
-            this.velocity.y = 0
-            this.onGround = true;
-        }
-        if (this.top + this.velocity.y - 1 < 0) {
-            this.velocity.y = 3
-            this.onGround = false;
-        }
-        if(!(this.hasWeapon) && normal_collision({
-            object1:this,
-            object2:this.weapon
-        })){
-            this.weapon.color = 'black';
-            this.hasWeapon = true;
-        }
-    }
-    fall(){
-        this.position.y += this.velocity.y;
-        this.velocity.y += gravity;
-        if(this.velocity.y >= 0){
-            // this.onGround = false;
-        }
-
-    }
-
-    cVertCol(){
-        for (let i = 0; i < this.collisionBlocks.first.length; i++) {
-            const colBlock = this.collisionBlocks.first[i];
-            const colBlock2 = this.collisionBlocks.sec[i];
-            if(collision({
-                object1:this,
-                object2:colBlock
-            })){
-                if(this.velocity.y > 0){
-                    this.onGround = true; 
-                    this.velocity.y = 3;
-                    this.position.y = colBlock.top - this.height - 0.01
-                }
-            }
-            if(collision({
-                object1:this,
-                object2:colBlock2
-            })){
-                if(this.velocity.y > 0){
-                    this.onGround = true; 
-                    this.velocity.y = 3;
-                    this.position.y = colBlock2.top - this.height - 0.01
-                }
-            }
-
-
-        }
-    }
-}
-class Platform{
-    constructor({position, height, width, num, plats}){
-        this.height = height;
-        this.width = width;
-        this.color = 'black';
-        this.position = position;
-        this.num = num;
-        this.plats = plats;
-        this.top = this.position.y;
-        this.bottom = this.position.y + this.height;
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
-    }
-    draw(){
-        c.beginPath();
-        c.rect(this.position.x, this.position.y, this.width, this.height);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    }
-    update(){
-        this.draw();
-        //pos first
-        
-        //update later
-        // this.plats = player.collisionBlocks;
-        this.bottom = this.position.y + this.height;
-        this.top = this.position.y;
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
-        
-        this.scrollDown()
-        if(player.hasWeapon == false && weapon.spawnW){
-            weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
-            weapon.position.y =  collisionBlocks[0].top-50;
-        }
-    }
-
-    scrollDown(){
-        if(player.position.y < canvas.height/2 || go){
-            var partner = this.plats[this.num - 1];
-            if (this.num == 0) {
-                partner = this.plats[this.plats.length - this.num-1];
-            }
-            this.position.y += scrollSpeed;
-            if(this.top > canvas.height+50){
-                this.position.y = partner.top - 200;
-                this.width = 250
-                if(this.position.pos == 'left'){
-                    this.position.x = getRandomInt(0, (canvas.width/2)+25);
-                }
-                else if(this.position.pos == 'right'){
-                    this.position.x = getRandomInt((canvas.width/2)-25, canvas.width-200)
-                }
-                this.height = 7
-
-                if(this.num  == 0 && player.hasWeapon == false){
-                    weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
-                    weapon.position.y =  collisionBlocks[0].top-50;
-                    weapon.spawnW = true;
-                }
-            }
-            go = true
-        }
-    }
-}
-
-class Weapon{
-    constructor({position,player}){
-        this.position={
-            x:position.x,
-            y:position.y,
-        }
-        this.player = player;
-        this.width = 20;
-        this.height = 50;
-        this.color = 'black';
-        this.angle = 0;
-
-        this.top = this.position.y;
-        this.bottom = this.position.y + this.height;
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
-
-        this.spawnW = false;
-    }
-    draw(){
-        c.beginPath();
-        c.rect(this.position.x, this.position.y, this.width, this.height);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    }
-    drawImageRot(){
-        // Store the current context state (i.e. rotation, translation etc..)
-        c.save()
-        
-        //Convert degrees to radian 
-        this.angle = Math.atan2(-((mouseX-20) - this.position.x+10), ((mouseY) - this.player.center.y));
-    
-        //Set the origin to the center of the image
-        c.translate(this.position.x+10, this.player.center.y);
-        
-        //Rotate the canvas around the origin
-        c.rotate(this.angle);
-        
-        //draw the image    
-        c.fillStyle = this.color;
-        c.fillRect(-1*(this.width/2),0,this.width,this.height);
-        this.position.x = this.player.position.x+this.player.width/2-10
-        // Restore canvas state as saved from above
-        c.restore();
-    }
-    update(){
-        if(this.player.hasWeapon){
-            this.position.x = this.player.position.x+player.width/2-10,
-            this.position.y = this.player.position.y+player.height/2,
-            this.drawImageRot();
-        }
-        else{
-            this.draw();
-            this.top = this.position.y;
-            this.bottom = this.position.y + this.height;
-            this.left = this.position.x;
-            this.right = this.position.x + this.width;
-        }
-    }
-}
-
-
-class Bullet{
-    constructor({position, angle, player}){
-        this.player = player;
-        this.position = {
-            x:position.x,
-            y:position.y,
-            currX:0,
-            currY:0
-        }
-        this.velocity ={
-            x:0,
-            y:0
-        }
-        this.angles = angle;
-        this.radius = 0;
-        this.color = 'green';
-    }
-
-    draw(){
-        c.beginPath();
-        c.arc(this.position.x, this.position.y, this.radius, Math.PI * 2, false);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-    }
-
-    drawImageRot(){
-        // Store the current context state (i.e. rotation, translation etc..)
-        c.save()
-        
-        //Convert degrees to radian 
-        this.angle = Math.atan2(-((mouseX-20) - this.position.x+10), (mouseY - this.player.center.y));
-        
-        //Set the origin to the center of the image
-        c.translate(this.position.x+10, this.player.center.y);
-        
-        //Rotate the canvas around the origin
-
-        c.rotate(this.angle);
-        
-        //draw the image    
-        c.beginPath();
-        c.arc(this.radius/2-4,40, this.radius, Math.PI * 2, false);
-        c.fillStyle = this.color;
-        c.fill();
-        c.closePath();
-        this.position.x = this.player.position.x+this.player.width/2-10
-        // Restore canvas state as saved from above
-        c.restore();
-    }
-    
-    update(){
-        this.draw();
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-    }
-    
-    shoot(){
-        if(key_pressed.mouseLeftClick && !(this.shot)){
-            this.radius = 8;
-            this.velocity.x = (Math.sin(-weapon.angle) * 10);
-            this.velocity.y = (Math.cos(-weapon.angle) * 10);
-            if(go){
-                // this.velocity.x+=scrollSpeed;
-                // this.velocity.y+=scrollSpeed;
-            }
-            this.position.x = this.player.center.x + Math.sin(-weapon.angle)*40
-            this.position.y = this.player.center.y + Math.cos(-weapon.angle)*40
-            // this.shot = true;
-        }
-        if(this.position.x <= 0
-            || this.position.x >= canvas.width
-            || this.position.y <= 0
-            || this.position.y >= canvas.height){
-            this.radius = 0;
-            this.velocity.x = 0;
-            this.velocity.y = 0;
-            // this.shot = false;
-        }
-    }
-}
-
-// platforms spawning must always be even
-var collisionBlocks = [];
-var collisionBlocks2 = [];
-
-for (let i = 0; i < 10; i++) {
-    collisionBlocks.push(    new Platform({
-        position:{
-            x:((canvas.width/2)-200)/2,
-            y:canvas.height - (10+(100*(i))),
-            pos:'left'
-        },
-        height:7,
-        width:250,
-        num:i,
-        plats:collisionBlocks
-    }))
-}
-for (let i = 0; i < 10; i++) {
-    collisionBlocks2.push(    new Platform({
-        position:{
-            x:(canvas.width/1.2)-200,
-            y:canvas.height - (10+(100*(i))),
-            pos:'right'
-        },
-        height:7,
-        width:250,
-        num:i,
-        plats:collisionBlocks
-    }))
-}
-
-// weapon spawning
-const weapon = new Weapon({
-    position:{
-        x:collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20,
-        y:collisionBlocks[9].top - 50
-    }
-});
-
 // player spawning
 const player = new Player({
     position:{
         x:canvas.width/2,
         y:canvas.height-100
-    },
-    collisionBlocks:{
-        first:collisionBlocks,
-        sec:collisionBlocks2
-    },
-    weapon:weapon
+    }
 });
 
-weapon.player = player;
+// platforms spawning must always be even
+var collisionBlocks = [];
+var collisionBlocks2 = [];
+
+// weapon spawning
+const weapon = new Weapon({
+    position:{
+        x:0,
+        y:0
+    },
+});
+
+create_platforms();
 
 let bullet = [];
 for (let i = 0; i < 5; i++) {
@@ -397,12 +43,16 @@ for (let i = 0; i < 5; i++) {
             x:weapon.position.x,
             y:weapon.position.y
         },
-        angle:weapon.angle,
+        weapon:weapon,
         player:player
     }));
 }
 
+var enemy = [];
+create_enemy();
 
+player.weapon = weapon;
+weapon.player = player;
 //player and vars
 var key_pressed = {
     w:false,
@@ -413,9 +63,11 @@ var key_pressed = {
     mouseLeftClick:false,
 };
 
-let inChamber = 0;
 let start, bulletDelay;
 // The game Loop 
+var plats = [collisionBlocks, collisionBlocks2];
+var followPlat;
+var followPlat2;
 function game_loop(timeStamp){
     if (start === undefined) {
         start = timeStamp;
@@ -423,35 +75,57 @@ function game_loop(timeStamp){
     }
     const elapsed = timeStamp - start;
 
+    if(weapon.spawnW == false){
+        var selectPlats = getRandomInt(0,2);
+        var selectPlats2 = getRandomInt(0,20);
+        if(plats[selectPlats][selectPlats2].inNegative){
+            followPlat = selectPlats;
+            followPlat2 = selectPlats2;
+            weapon.position.x = plats[selectPlats][selectPlats2].position.x + plats[selectPlats][selectPlats2].width/2 - 20;
+            weapon.position.y = plats[selectPlats][selectPlats2].top - 50;
+            weapon.spawnW = true;
+        }
+    }
+    if(!(player.hasWeapon) && weapon.spawnW){
+        weapon.position.x = plats[followPlat][followPlat2].position.x + plats[followPlat][followPlat2].width/2 - 20;
+        weapon.position.y = plats[followPlat][followPlat2].top - 50;
+        weapon.color = 'yellow';
+    }
 
     requestAnimationFrame(game_loop);
     c.clearRect(0,0,canvas.width,canvas.height);
+
+    //vars for classes
     player.collisionBlocks = {
         first:collisionBlocks,
         sec:collisionBlocks2
     };
+    enemy[0].collisionBlocks = {
+        first:collisionBlocks,
+        sec:collisionBlocks2
+    };
+
     for(let i = 0; i < collisionBlocks.length; i++){
         collisionBlocks[i].update();
         collisionBlocks2[i].update();
     }
     player.update();
+    for (let i = 0; i < enemy.length; i++) {        
+        enemy[i].update();
+    }
+    weapon.update();
     if(player.hasWeapon){
         for (let i = 0; i < bullet.length; i++) {
             bullet[i].update();
         }
     }
-    else{
-        if(go){
-            // weapon.position.x = collisionBlocks[0].position.x + collisionBlocks[0].width/2 - weapon.width;
-            // weapon.position.y =  collisionBlocks[0].top-50;
-            weapon.color = 'yellow';
-        }
-    }
-    weapon.update();
 
     if(key_pressed.w && player.onGround){
-        player.velocity.y = -13;
+        player.velocity.y = -18;
         player.onGround = false;
+    }
+    else if(key_pressed.s && player.onGround == false){
+        player.velocity.y += player.velocity.y;
     }
     player.velocity.x = 0;
     if(key_pressed.a){
@@ -460,20 +134,22 @@ function game_loop(timeStamp){
     else if(key_pressed.d){
         player.velocity.x = 5;
     }
-    else if(key_pressed.r && inChamber >= bullet.length){
-        inChamber = 0;
+    if(key_pressed.r && player.inChamber >= bullet.length){
+        player.inChamber = 0;
         weapon.color = 'green';
         setTimeout(() => {
             weapon.color = 'black';
         }, 500);
     }
-    if(key_pressed.mouseLeftClick && player.shot == false && inChamber < bullet.length && player.hasWeapon){
-        bullet[inChamber].shoot();
-        inChamber++;
+
+    //weapon x bullet 
+    if(key_pressed.mouseLeftClick && player.shot == false && player.inChamber < bullet.length && player.hasWeapon){
+        bullet[player.inChamber].shoot();
+        player.inChamber++;
         bulletDelay = elapsed;
         player.shot = true;
     }
-    if(inChamber >= bullet.length){
+    if(player.inChamber >= bullet.length){
         weapon.color = 'red';
     }
     
@@ -481,51 +157,40 @@ function game_loop(timeStamp){
         player.shot = false;
     }
 
-    if(player.top >= canvas.height){
-        go = false;
+
+// resets the game//////////////////////////////////////////
+    if(player.gameOver){
+        player.inChamber = 0;
+        followPlat = undefined
+        followPlat2 = undefined
+        player.go = false;
         collisionBlocks = [];
         collisionBlocks2 = [];
-        player.position.x=canvas.width/2,
-        player.position.y=canvas.height-100
+        player.position.x = canvas.width/2,
+        player.position.y = canvas.height-100
         player.hasWeapon = false;
         weapon.spawnW = false;
-        for (let i = 0; i < 10; i++) {
-            collisionBlocks.push(    new Platform({
-                position:{
-                    x:((canvas.width/2)-200)/2,
-                    y:canvas.height - (10+(100*(i))),
-                    pos:'left'
-                },
-                height:7,
-                width:250,
-                num:i,
-                plats:collisionBlocks
-            }))
-        }
-        for (let i = 0; i < 10; i++) {
-            collisionBlocks2.push(    new Platform({
-                position:{
-                    x:(canvas.width/1.2)-200,
-                    y:canvas.height - (10+(100*(i))),
-                    pos:'right'
-                },
-                height:7,
-                width:250,
-                num:i,
-                plats:collisionBlocks
-            }))
-        }
+        create_platforms();
+        plats = [collisionBlocks, collisionBlocks2];
+        enemy = [];
+        create_enemy();
+        // weapon.position.x = collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20;
+        // weapon.position.y = collisionBlocks[9].top - 50;
+        player.gameOver = false;
     }
 }
 game_loop();
 
 // event listeners && functions
 window.addEventListener('keypress', (e)=>{
-    if(String(e.key).toLowerCase() == 'w' && player.onGround){
+    if((e.keyCode == 32 || String(e.key).toLowerCase() == 'w') && player.onGround){
         key_pressed.w = true;
     }
     if(String(e.key).toLowerCase() == 'a'){
         key_pressed.a = true;
+    }
+    if(String(e.key).toLowerCase() == 's'){
+        key_pressed.s = true;
     }
     if(String(e.key).toLowerCase() == 'd'){
         key_pressed.d = true;
@@ -535,11 +200,14 @@ window.addEventListener('keypress', (e)=>{
     }
 });
 window.addEventListener('keyup', (e)=>{
-    if(String(e.key).toLowerCase() == 'w'){
+    if((e.keyCode == 32 || String(e.key).toLowerCase() == 'w')){
         key_pressed.w = false;
     }
     if(String(e.key).toLowerCase() == 'a'){
         key_pressed.a = false;
+    }
+    if(String(e.key).toLowerCase() == 's'){
+        key_pressed.s = false;
     }
     if(String(e.key).toLowerCase() == 'd'){
         key_pressed.d = false;
@@ -549,20 +217,7 @@ window.addEventListener('keyup', (e)=>{
     }
 });
 
-function collision({object1, object2}){
-    return(object1.bottom + object1.velocity.y >= object2.top
-    && object1.bottom <= object2.bottom
-    && object1.left <= object2.right
-    && object1.right >= object2.left
-    );
-}
-function normal_collision({object1, object2}){
-    return(object1.bottom >= object2.top
-    && object1.top <= object2.bottom
-    && object1.left <= object2.right
-    && object1.right >= object2.left
-    );
-}
+
 window.addEventListener('mousemove',(e)=>{
     mouseX = e.clientX-Math.abs((window.innerWidth-canvas.width)/2);
     mouseY = e.clientY-Math.abs((window.innerHeight-canvas.height)/2);
@@ -577,26 +232,3 @@ window.addEventListener('mouseup',(e)=>{
         key_pressed.mouseLeftClick = false;
     }
 });
-
-function drawImageRot(x,y,width,height){
-    // Store the current context state (i.e. rotation, translation etc..)
-    c.save()
-
-    //Convert degrees to radian 
-    // var rad = deg * Math.PI / 180;
-    var rad = Math.atan2(-(mouseX - x), (mouseY - y));
-
-
-    //Set the origin to the center of the image
-    c.translate(x + width / 2, y + height);
-
-    //Rotate the canvas around the origin
-    c.rotate(rad);
-
-    //draw the image    
-    // c.clearRect(x,y,width,height)
-    c.fillRect(width / 2 * (-1),0,width,height);
-
-    // Restore canvas state as saved from above
-    c.restore();
-}
