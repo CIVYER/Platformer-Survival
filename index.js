@@ -129,7 +129,8 @@ function game_loop(timeStamp){
         player.onGround = false;
     }
     else if(key_pressed.s && player.onGround == false){
-        player.velocity.y += player.velocity.y;
+        player.velocity.y = 3;
+        player.onGround = true;
     }
     player.velocity.x = 0;
     if(key_pressed.a){

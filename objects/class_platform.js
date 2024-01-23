@@ -44,13 +44,13 @@ class Platform{
     }
 
     scrollDown(){
-        if(this.elements.player.bottom < (canvas.height/2) || this.elements.player.go){
+        if(this.elements.player.bottom < (canvas.height/2)-100 || this.elements.player.go){
             var partner = this.elements.platforms[this.num - 1];
             if (this.num == 0) {
                 partner = this.elements.platforms[this.elements.platforms.length - this.num-1];
             }
             this.position.y += scrollSpeed;
-            if(this.elements.player.top - this.elements.player.velocity.y <= Math.abs(this.elements.player.velocity.y)+35){
+            if(this.elements.player.top - this.elements.player.velocity.y <= Math.abs(this.elements.player.velocity.y)){
                 this.position.y += Math.abs(this.elements.player.velocity.y);
             }
             if(this.top > canvas.height+50){

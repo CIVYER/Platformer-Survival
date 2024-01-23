@@ -78,7 +78,7 @@ class Player{
             this.velocity.y = 0;
             this.onGround = true;
         }
-        if (this.top + this.velocity.y - 1 < 0) {
+        if (this.top + this.velocity.y - 1 < -50) {
             this.velocity.y = 3
             this.onGround = false;
         }
