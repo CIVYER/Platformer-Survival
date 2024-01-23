@@ -186,34 +186,35 @@ function game_loop(timeStamp){
 game_loop();
 
 // event listeners && functions
-window.addEventListener('keypress', (e)=>{
-    if((e.keyCode == 32 || String(e.key).toLowerCase() == 'w') && player.onGround){
+window.addEventListener('keydown', (e)=>{
+    if((String(e.key).toLowerCase() == 'arrowup' || e.keyCode == 32 || String(e.key).toLowerCase() == 'w') && player.onGround){
         key_pressed.w = true;
     }
-    if(String(e.key).toLowerCase() == 'a'){
+    if(String(e.key).toLowerCase() == 'a' || String(e.key).toLowerCase() == 'arrowleft'){
         key_pressed.a = true;
     }
-    if(String(e.key).toLowerCase() == 's'){
+    if(String(e.key).toLowerCase() == 's' || String(e.key).toLowerCase() == 'arrowdown'){
         key_pressed.s = true;
     }
-    if(String(e.key).toLowerCase() == 'd'){
+    if(String(e.key).toLowerCase() == 'd' || String(e.key).toLowerCase() == 'arrowright'){
         key_pressed.d = true;
     }
     if(String(e.key).toLowerCase() == 'r'){
         key_pressed.r = true;
     }
+    console.log(e.key);
 });
 window.addEventListener('keyup', (e)=>{
-    if((e.keyCode == 32 || String(e.key).toLowerCase() == 'w')){
+    if((String(e.key).toLowerCase() == 'arrowup' || e.keyCode == 32 || String(e.key).toLowerCase() == 'w')){
         key_pressed.w = false;
     }
-    if(String(e.key).toLowerCase() == 'a'){
+    if(String(e.key).toLowerCase() == 'a' || String(e.key).toLowerCase() == 'arrowleft'){
         key_pressed.a = false;
     }
-    if(String(e.key).toLowerCase() == 's'){
+    if(String(e.key).toLowerCase() == 's' || String(e.key).toLowerCase() == 'arrowdown'){
         key_pressed.s = false;
     }
-    if(String(e.key).toLowerCase() == 'd'){
+    if(String(e.key).toLowerCase() == 'd' || String(e.key).toLowerCase() == 'arrowright'){
         key_pressed.d = false;
     }
 });

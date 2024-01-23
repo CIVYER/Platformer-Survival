@@ -102,7 +102,6 @@ class Player{
         if(this.health <= 0){
             this.gameOver = true;
         }
-        console.log(this.health);
     }
     fall(){
         this.position.y += this.velocity.y;

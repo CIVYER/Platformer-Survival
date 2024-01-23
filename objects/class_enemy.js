@@ -110,6 +110,10 @@ class Enemy{
         ){
             this.hitDelay = this.elapsedTime;
             this.player.health -= 3;
+            this.player.color = 'red';
+            setTimeout(() => {
+                this.player.color = 'blue';
+            }, 500);
         }
     }
 
