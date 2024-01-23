@@ -30,6 +30,10 @@ class Player{
         this.collisionBlocks = collisionBlocks;
         this.go = false;
         this.gameOver = false;
+
+        this.health = 100;
+        this.healthRegenDelay = 0;
+        this.elapsedTimer = 0;
     }
 
     draw(){
@@ -39,9 +43,18 @@ class Player{
         c.fill();
         c.closePath();
     }
+    
+    drawHealth(){
+        c.beginPath();
+        c.rect(this.position.x, this.position.y, this.health/2, 10);
+        c.fillStyle = 'green';
+        c.fill();
+        c.closePath();
+    }
 
     update(){
         this.draw();
+        this.drawHealth();
 
         this.center.x = this.position.x + (this.width/2);
         this.center.y = this.position.y + (this.height/2);
@@ -75,6 +88,16 @@ class Player{
         if(this.top >= canvas.height + 150){
             this.gameOver = true;
         }
+
+        if(this.health < 100 && this.healthRegenDelay+1000 < this.elapsedTimer){
+            this.health +=1;
+            this.healthRegenDelay = this.elapsedTimer;
+        }
+
+        if(this.health <= 0){
+            this.gameOver = true;
+        }
+        console.log(this.health);
     }
     fall(){
         this.position.y += this.velocity.y;

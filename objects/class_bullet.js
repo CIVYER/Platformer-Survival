@@ -4,8 +4,6 @@ class Bullet{
         this.position = {
             x:position.x,
             y:position.y,
-            currX:0,
-            currY:0
         }
         this.velocity ={
             x:0,

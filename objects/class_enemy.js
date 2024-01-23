@@ -29,6 +29,9 @@ class Enemy{
 
         this.spawned = false;
         this.bullet = bullet;
+        this.hitDelay = 0;
+        this.elapsedTime = 0;
+        this.playerCollide = false;
     }
 
     draw(){
@@ -88,17 +91,25 @@ class Enemy{
                 object2:this.bullet[i]
             })){
                 this.spawned = false;
-                const colBlocks = [this.platforms.first, this.platforms.sec];
-                const firstnum = getRandomInt(0,2);
-                const secondnum = getRandomInt(0,20);
-                if (colBlocks[firstnum][secondnum].inNegative && this.spawned == false) {
-                    this.velocity.x = 0
-                    this.position.y = colBlocks[firstnum][secondnum].top - 10; 
-                    this.position.x = colBlocks[firstnum][secondnum].position.x + colBlocks[firstnum][secondnum].width/2; 
-                    this.velocity.x = this.speed;
-                    this.spawned = true;
-                }
+                this.position.y = canvas.height + 100;
+                this.bullet[i].velocity.y = 0
+                this.bullet[i].velocity.x = 0;
+                this.bullet[i].position.y = 0
+                this.bullet[i].position.x = 0;
+                this.bullet[i].radius = 0;
             }
+        }
+    }
+
+    collide_with_player(){
+        if(collision_all_solid({
+            object1:this,
+            object2:this.player
+        })
+        && this.hitDelay+100 < this.elapsedTime
+        ){
+            this.hitDelay = this.elapsedTime;
+            this.player.health -= 3;
         }
     }
 
@@ -132,6 +143,9 @@ class Enemy{
         this.left = this.position.x;
         this.bottom = this.position.y + this.height;
         this.right = this.position.x + this.width;
+
+
+        this.collide_with_player();
 
     }
 }

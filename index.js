@@ -74,7 +74,8 @@ function game_loop(timeStamp){
         bulletDelay = timeStamp;
     }
     const elapsed = timeStamp - start;
-
+    requestAnimationFrame(game_loop);
+    c.clearRect(0,0,canvas.width,canvas.height);
     if(weapon.spawnW == false){
         var selectPlats = getRandomInt(0,2);
         var selectPlats2 = getRandomInt(0,20);
@@ -92,9 +93,6 @@ function game_loop(timeStamp){
         weapon.color = 'yellow';
     }
 
-    requestAnimationFrame(game_loop);
-    c.clearRect(0,0,canvas.width,canvas.height);
-
     //vars for classes
     player.collisionBlocks = {
         first:collisionBlocks,
@@ -110,7 +108,9 @@ function game_loop(timeStamp){
         collisionBlocks2[i].update();
     }
     player.update();
-    for (let i = 0; i < enemy.length; i++) {        
+    player.elapsedTimer = elapsed;
+    for (let i = 0; i < enemy.length; i++) {  
+        enemy[i].elapsedTime = elapsed;      
         enemy[i].update();
     }
     weapon.update();
@@ -134,12 +134,16 @@ function game_loop(timeStamp){
     else if(key_pressed.d){
         player.velocity.x = 5;
     }
-    if(key_pressed.r && player.inChamber >= bullet.length){
-        player.inChamber = 0;
+    if((key_pressed.r) && player.inChamber >= bullet.length){
         weapon.color = 'green';
         setTimeout(() => {
+            player.inChamber = 0;
+            key_pressed.r = false;
             weapon.color = 'black';
-        }, 500);
+        }, 1000);
+    }
+    else if(player.inChamber >= bullet.length){
+        weapon.color = 'red';
     }
 
     //weapon x bullet 
@@ -149,9 +153,6 @@ function game_loop(timeStamp){
         bulletDelay = elapsed;
         player.shot = true;
     }
-    if(player.inChamber >= bullet.length){
-        weapon.color = 'red';
-    }
     
     if(bulletDelay+500 < elapsed){
         player.shot = false;
@@ -160,6 +161,7 @@ function game_loop(timeStamp){
 
 // resets the game//////////////////////////////////////////
     if(player.gameOver){
+        player.health = 100;
         player.inChamber = 0;
         followPlat = undefined
         followPlat2 = undefined
@@ -178,6 +180,8 @@ function game_loop(timeStamp){
         // weapon.position.y = collisionBlocks[9].top - 50;
         player.gameOver = false;
     }
+
+
 }
 game_loop();
 
@@ -211,9 +215,6 @@ window.addEventListener('keyup', (e)=>{
     }
     if(String(e.key).toLowerCase() == 'd'){
         key_pressed.d = false;
-    }
-    if(String(e.key).toLowerCase() == 'r'){
-        key_pressed.r = false;
     }
 });
 

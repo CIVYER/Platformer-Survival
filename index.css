@@ -28,3 +28,9 @@ body{
 
     border: 1px solid black;
 }
+
+.instruction{
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
