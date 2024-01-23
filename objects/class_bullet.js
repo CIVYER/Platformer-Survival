@@ -30,11 +30,10 @@ class Bullet{
     update(){
         this.draw();
         this.angle = weapon.angle;
-        if(this.player.go){
-            this.position.y += this.velocity.y + scrollSpeed;
-        }
+
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
         this.top = this.position.y - this.radius;
         this.bottom = this.position.y + this.radius;
         this.left = this.position.x - this.radius;
@@ -44,8 +43,8 @@ class Bullet{
     shoot(){
         if(key_pressed.mouseLeftClick && !(this.player.shot)){
             this.radius = 8;
-            this.velocity.x = (Math.sin(-this.angle) * 10);
-            this.velocity.y = (Math.cos(-this.angle) * 10);
+            this.velocity.x = (Math.sin(-this.angle) * 30);
+            this.velocity.y = (Math.cos(-this.angle) * 30);
             this.position.x = this.player.center.x + Math.sin(-this.angle)*55
             this.position.y = this.player.center.y + Math.cos(-this.angle)*55
         }

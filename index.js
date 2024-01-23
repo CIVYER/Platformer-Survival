@@ -30,7 +30,7 @@ var collisionBlocks3 = [];
 // weapon spawning
 const weapon = new Weapon({
     position:{
-        x:0,
+        x:-100,
         y:0
     },
 });
@@ -70,124 +70,130 @@ var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
 var followPlat;
 var followPlat2;
 function game_loop(timeStamp){
-    if (start === undefined) {
-        start = timeStamp;
-        bulletDelay = timeStamp;
-    }
-    const elapsed = timeStamp - start;
-    requestAnimationFrame(game_loop);
-    c.clearRect(0,0,canvas.width,canvas.height);
-    if(weapon.spawnW == false){
-        var selectPlats = getRandomInt(0,3);
-        var selectPlats2 = getRandomInt(0,20);
-        if(plats[selectPlats][selectPlats2].inNegative){
-            followPlat = selectPlats;
-            followPlat2 = selectPlats2;
-            weapon.position.x = plats[selectPlats][selectPlats2].position.x + plats[selectPlats][selectPlats2].width/2 - 20;
-            weapon.position.y = plats[selectPlats][selectPlats2].top - 50;
-            weapon.spawnW = true;
+    if(!player.start){
+
+        if (start === undefined) {
+            start = timeStamp;
+            bulletDelay = timeStamp;
         }
-    }
-    if(!(player.hasWeapon) && weapon.spawnW){
-        weapon.position.x = plats[followPlat][followPlat2].position.x + plats[followPlat][followPlat2].width/2 - 20;
-        weapon.position.y = plats[followPlat][followPlat2].top - 50;
-        weapon.color = 'yellow';
-    }
-
-    //vars for classes
-    player.collisionBlocks = {
-        first:collisionBlocks,
-        sec:collisionBlocks2,
-        tres:collisionBlocks3
-    };
-    enemy[0].collisionBlocks = {
-        first:collisionBlocks,
-        sec:collisionBlocks2,
-        tres:collisionBlocks3
-    };
-
-    for(let i = 0; i < collisionBlocks.length; i++){
-        collisionBlocks[i].update();
-        collisionBlocks2[i].update();
-        collisionBlocks3[i].update();
-    }
-    player.update();
-    player.elapsedTimer = elapsed;
-    for (let i = 0; i < enemy.length; i++) {  
-        enemy[i].elapsedTime = elapsed;      
-        enemy[i].update();
-    }
-    weapon.update();
-    if(player.hasWeapon){
-        for (let i = 0; i < bullet.length; i++) {
-            bullet[i].update();
+        const elapsed = timeStamp - start;
+        requestAnimationFrame(game_loop);
+        c.clearRect(0,0,canvas.width,canvas.height);
+        if(weapon.spawnW == false){
+            var selectPlats = getRandomInt(0,3);
+            var selectPlats2 = getRandomInt(0,20);
+            if(plats[selectPlats][selectPlats2].inNegative){
+                followPlat = selectPlats;
+                followPlat2 = selectPlats2;
+                weapon.position.x = plats[selectPlats][selectPlats2].position.x + plats[selectPlats][selectPlats2].width/2 - 20;
+                weapon.position.y = plats[selectPlats][selectPlats2].top - 50;
+                weapon.spawnW = true;
+            }
         }
-    }
-
-    if(key_pressed.w && player.onGround){
-        player.velocity.y = -18;
-        player.onGround = false;
-    }
-    else if(key_pressed.s && player.onGround == false){
-        player.velocity.y = 3;
-        player.onGround = true;
-    }
-    player.velocity.x = 0;
-    if(key_pressed.a){
-        player.velocity.x = -5;
-    }
-    else if(key_pressed.d){
-        player.velocity.x = 5;
-    }
-    if((key_pressed.r) && player.inChamber >= bullet.length){
-        weapon.color = 'green';
-        setTimeout(() => {
-            player.inChamber = 0;
-            key_pressed.r = false;
-            weapon.color = 'black';
-        }, 1000);
-    }
-    else if(player.inChamber >= bullet.length){
-        weapon.color = 'red';
-    }
-
-    //weapon x bullet 
-    if(key_pressed.mouseLeftClick && player.shot == false && player.inChamber < bullet.length && player.hasWeapon){
-        bullet[player.inChamber].shoot();
-        player.inChamber++;
-        bulletDelay = elapsed;
-        player.shot = true;
-    }
+        if(!(player.hasWeapon) && weapon.spawnW){
+            weapon.position.x = plats[followPlat][followPlat2].position.x + plats[followPlat][followPlat2].width/2 - 20;
+            weapon.position.y = plats[followPlat][followPlat2].top - 50;
+            weapon.color = 'yellow';
+        }
     
-    if(bulletDelay+500 < elapsed){
-        player.shot = false;
+        //vars for classes
+        player.collisionBlocks = {
+            first:collisionBlocks,
+            sec:collisionBlocks2,
+            tres:collisionBlocks3
+        };
+        enemy[0].collisionBlocks = {
+            first:collisionBlocks,
+            sec:collisionBlocks2,
+            tres:collisionBlocks3
+        };
+    
+        for(let i = 0; i < collisionBlocks.length; i++){
+            // collisionBlocks[i].platforms = collisionBlocks 
+            // collisionBlocks2[i].platforms = collisionBlocks2 
+            // collisionBlocks3[i].platforms = collisionBlocks3 
+            collisionBlocks[i].update();
+            collisionBlocks2[i].update();
+            collisionBlocks3[i].update();
+        }
+        player.update();
+        player.elapsedTimer = elapsed;
+        for (let i = 0; i < enemy.length; i++) {  
+            enemy[i].elapsedTime = elapsed;      
+            enemy[i].update();
+        }
+        weapon.update();
+        if(player.hasWeapon){
+            for (let i = 0; i < bullet.length; i++) {
+                bullet[i].update();
+            }
+        }
+    
+        if(key_pressed.w && player.onGround){
+            player.velocity.y = -18;
+            player.onGround = false;
+        }
+        else if(key_pressed.s && player.onGround == true){
+            player.position.y += 11;
+            player.bottom += 11;
+            player.velocity.y = 3;
+            player.onGround = false;
+        }
+        player.velocity.x = 0;
+        if(key_pressed.a){
+            player.velocity.x = -5;
+        }
+        else if(key_pressed.d){
+            player.velocity.x = 5;
+        }
+        if((key_pressed.r) && player.inChamber >= bullet.length){
+            weapon.color = 'green';
+            setTimeout(() => {
+                player.inChamber = 0;
+                key_pressed.r = false;
+                weapon.color = 'black';
+            }, 1000);
+        }
+        else if(player.inChamber >= bullet.length){
+            weapon.color = 'red';
+        }
+    
+        //weapon x bullet 
+        if(key_pressed.mouseLeftClick && player.shot == false && player.inChamber < bullet.length && player.hasWeapon){
+            bullet[player.inChamber].shoot();
+            player.inChamber++;
+            bulletDelay = elapsed;
+            player.shot = true;
+        }
+        
+        if(bulletDelay+500 < elapsed){
+            player.shot = false;
+        }
+    
+    
+    // resets the game//////////////////////////////////////////
+        if(player.gameOver){
+            player.health = 100;
+            player.inChamber = 0;
+            followPlat = undefined
+            followPlat2 = undefined
+            player.go = false;
+            collisionBlocks = [];
+            collisionBlocks2 = [];
+            collisionBlocks3 = [];
+            player.position.x = canvas.width/2,
+            player.position.y = canvas.height-100
+            player.hasWeapon = false;
+            weapon.spawnW = false;
+            create_platforms();
+            plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
+            enemy = [];
+            create_enemy();
+            // weapon.position.x = collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20;
+            // weapon.position.y = collisionBlocks[9].top - 50;
+            player.gameOver = false;
+        }
     }
-
-
-// resets the game//////////////////////////////////////////
-    if(player.gameOver){
-        player.health = 100;
-        player.inChamber = 0;
-        followPlat = undefined
-        followPlat2 = undefined
-        player.go = false;
-        collisionBlocks = [];
-        collisionBlocks2 = [];
-        collisionBlocks3 = [];
-        player.position.x = canvas.width/2,
-        player.position.y = canvas.height-100
-        player.hasWeapon = false;
-        weapon.spawnW = false;
-        create_platforms();
-        plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
-        enemy = [];
-        create_enemy();
-        // weapon.position.x = collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20;
-        // weapon.position.y = collisionBlocks[9].top - 50;
-        player.gameOver = false;
-    }
-
-
 }
 game_loop();
 
@@ -208,7 +214,6 @@ window.addEventListener('keydown', (e)=>{
     if(String(e.key).toLowerCase() == 'r'){
         key_pressed.r = true;
     }
-    console.log(e.key);
 });
 window.addEventListener('keyup', (e)=>{
     if((String(e.key).toLowerCase() == 'arrowup' || e.keyCode == 32 || String(e.key).toLowerCase() == 'w')){

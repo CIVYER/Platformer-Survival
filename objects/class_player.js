@@ -34,6 +34,8 @@ class Player{
         this.health = 100;
         this.healthRegenDelay = 0;
         this.elapsedTimer = 0;
+
+        this.start = false;
     }
 
     draw(){
@@ -144,7 +146,7 @@ class Player{
                 if(this.velocity.y > 0){
                     this.onGround = true; 
                     this.velocity.y = 3;
-                    this.position.y = colBlock2.top - this.height - 0.01
+                    this.position.y = colBlock3.top - this.height - 0.01
                 }
             }
 

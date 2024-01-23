@@ -7,24 +7,22 @@ html, body{
 body{
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    /* overflow: hidden; */
 }
 
 #body{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 100%;
-    width: 100%;
-
+    position: relative;
+    height: 500px;
+    width: 1000px;
 }
 
 #canvas_container{
     /* flex: 1; */
 
-    height: 80%;
-    width: 80%;
+    height: 100%;
+    width: 100%;
 
     border: 1px solid black;
 }

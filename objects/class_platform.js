@@ -12,6 +12,8 @@ class Platform{
         this.right = this.position.x + this.width;
 
         this.inNegative = false;
+
+        this.occupant = null;
     }
     draw(){
         c.beginPath();
@@ -23,9 +25,9 @@ class Platform{
     update(){
         this.draw();
 
-        this.bottom = this.position.y + this.height;
         this.top = this.position.y;
         this.left = this.position.x;
+        this.bottom = this.position.y + this.height;
         this.right = this.position.x + this.width;
         
         this.scrollDown()
@@ -46,6 +48,7 @@ class Platform{
     scrollDown(){
         if(this.elements.player.bottom < (canvas.height/2)-100 || this.elements.player.go){
             var partner = this.elements.platforms[this.num - 1];
+            this.occupant = null;
             if (this.num == 0) {
                 partner = this.elements.platforms[this.elements.platforms.length - this.num-1];
             }
@@ -63,7 +66,8 @@ class Platform{
                     this.position.x = getRandomInt((canvas.width/2), canvas.width-200)
                 }
                 else if(this.position.pos == 'center'){
-                    this.position.x = getRandomInt((canvas.width/2)-200, canvas.width/2-200)
+                    this.position.x = getRandomInt((canvas.width/2)-200, canvas.width/2+200)
+                    this.position.y = partner.top - 200;
                 }
                 this.height = 7
 

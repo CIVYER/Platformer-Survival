@@ -1,5 +1,5 @@
 function create_enemy(){
-    var emenemynum = 10
+    var emenemynum = 10;
     for (let i = 0; i < emenemynum; i++) {
         enemy.push(new Enemy({
             position:{
@@ -13,7 +13,8 @@ function create_enemy(){
             },
             player:player,
             weapon:null,
-            bullet:bullet
+            bullet:bullet,
+            id:i
         }));
     }
 }

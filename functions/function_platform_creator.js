@@ -23,7 +23,7 @@ function create_platforms(){
 
         collisionBlocks2.push(    new Platform({
             position:{
-                x:getRandomInt((canvas.width/2)-200, canvas.width/2-200),
+                x:getRandomInt((canvas.width/2)-200, canvas.width/2+200),
                 y:yFormula,
                 pos:'center'
             },

@@ -1,11 +1,11 @@
 class Enemy{
-    constructor({position, collisionBlocks, weapon, player, bullet}){
+    constructor({position, collisionBlocks, weapon, player, bullet, id}){
         this.position = {
             x:position.x,
             y:position.y
         };
         this.height = 50;
-        this.width = 50;
+        this.width = 30;
         this.color = 'brown';
         
         this.platforms = collisionBlocks;
@@ -22,16 +22,18 @@ class Enemy{
         this.right = this.position.x + this.width;
 
         this.velocity = {
-            x:2,
+            x:1,
             y:0
         }
-        this.speed = 2;
+        this.speed = 1;
 
         this.spawned = false;
         this.bullet = bullet;
         this.hitDelay = 0;
         this.elapsedTime = 0;
         this.playerCollide = false;
+
+        this.id = id;
     }
 
     draw(){
@@ -56,14 +58,17 @@ class Enemy{
                 object1:this,
                 object2:colBlock
             })){
+                if(colBlock.occupant != this.id){
+                    this.position.y = canvas.height + 100;
+                }
                 if(this.velocity.y > 0){
                     this.velocity.y = scrollSpeed; 
                     this.position.y = colBlock.top - this.height - 0.01;
                 }
-                if(this.left + this.velocity.x <= colBlock.left && this.bottom <= colBlock2.top){
+                if(this.left + this.velocity.x <= colBlock.left && this.bottom <= colBlock.top){
                     this.velocity.x = this.speed;
                 }
-                else if(this.right + this.velocity.x >= colBlock.right && this.bottom <= colBlock2.top){
+                else if(this.right + this.velocity.x >= colBlock.right && this.bottom <= colBlock.top){
                     this.velocity.x = this.speed * (-1);
                 }
             }
@@ -71,6 +76,9 @@ class Enemy{
                 object1:this,
                 object2:colBlock2
             })){
+                if(colBlock2.occupant != this.id){
+                    this.position.y = canvas.height + 100;
+                }
                 if(this.velocity.y > 0){
                     this.velocity.y = scrollSpeed; 
                     this.position.y = colBlock2.top - this.height - 0.01;
@@ -87,6 +95,9 @@ class Enemy{
                 object1:this,
                 object2:colBlock3
             })){
+                if(colBlock3.occupant != this.id){
+                    this.position.y = canvas.height + 100;
+                }
                 if(this.velocity.y > 0){
                     this.velocity.y = scrollSpeed; 
                     this.position.y = colBlock3.top - this.height - 0.01;
@@ -134,6 +145,26 @@ class Enemy{
         }
     }
 
+    randSpawn(){
+        this.spawned = false;
+        const colBlocks = [this.platforms.first, this.platforms.sec, this.platforms.tres];
+        const firstnum = getRandomInt(0,3);
+        const secondnum = getRandomInt(0,20);
+        if (colBlocks[firstnum][secondnum].inNegative && this.spawned == false && colBlocks[firstnum][secondnum].occupant == null) {
+            this.velocity.x = 0
+            this.position.y = colBlocks[firstnum][secondnum].top - 10; 
+            this.position.x = colBlocks[firstnum][secondnum].position.x + colBlocks[firstnum][secondnum].width/2; 
+            setTimeout(() => {
+                this.velocity.x = this.speed;
+            }, 1000);
+            this.spawned = true;
+            colBlocks[firstnum][secondnum].occupant = this.id;
+        }
+        else{
+            this.position.y = canvas.height+100;
+        }
+    }
+
     update(){
         this.draw();
         this.fall();
@@ -144,17 +175,7 @@ class Enemy{
 
 
         if(this.top >= canvas.height){
-            this.spawned = false;
-            const colBlocks = [this.platforms.first, this.platforms.sec];
-            const firstnum = getRandomInt(0,2);
-            const secondnum = getRandomInt(0,20);
-            if (colBlocks[firstnum][secondnum].inNegative && this.spawned == false) {
-                this.velocity.x = 0
-                this.position.y = colBlocks[firstnum][secondnum].top - 10; 
-                this.position.x = colBlocks[firstnum][secondnum].position.x + colBlocks[firstnum][secondnum].width/2; 
-                this.velocity.x = this.speed;
-                this.spawned = true;
-            }
+            this.randSpawn();
         }
         this.center = {
             x:this.position.x + this.width/2,
