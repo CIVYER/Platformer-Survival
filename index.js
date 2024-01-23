@@ -25,6 +25,7 @@ const player = new Player({
 // platforms spawning must always be even
 var collisionBlocks = [];
 var collisionBlocks2 = [];
+var collisionBlocks3 = [];
 
 // weapon spawning
 const weapon = new Weapon({
@@ -65,7 +66,7 @@ var key_pressed = {
 
 let start, bulletDelay;
 // The game Loop 
-var plats = [collisionBlocks, collisionBlocks2];
+var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
 var followPlat;
 var followPlat2;
 function game_loop(timeStamp){
@@ -77,7 +78,7 @@ function game_loop(timeStamp){
     requestAnimationFrame(game_loop);
     c.clearRect(0,0,canvas.width,canvas.height);
     if(weapon.spawnW == false){
-        var selectPlats = getRandomInt(0,2);
+        var selectPlats = getRandomInt(0,3);
         var selectPlats2 = getRandomInt(0,20);
         if(plats[selectPlats][selectPlats2].inNegative){
             followPlat = selectPlats;
@@ -96,16 +97,19 @@ function game_loop(timeStamp){
     //vars for classes
     player.collisionBlocks = {
         first:collisionBlocks,
-        sec:collisionBlocks2
+        sec:collisionBlocks2,
+        tres:collisionBlocks3
     };
     enemy[0].collisionBlocks = {
         first:collisionBlocks,
-        sec:collisionBlocks2
+        sec:collisionBlocks2,
+        tres:collisionBlocks3
     };
 
     for(let i = 0; i < collisionBlocks.length; i++){
         collisionBlocks[i].update();
         collisionBlocks2[i].update();
+        collisionBlocks3[i].update();
     }
     player.update();
     player.elapsedTimer = elapsed;
@@ -168,12 +172,13 @@ function game_loop(timeStamp){
         player.go = false;
         collisionBlocks = [];
         collisionBlocks2 = [];
+        collisionBlocks3 = [];
         player.position.x = canvas.width/2,
         player.position.y = canvas.height-100
         player.hasWeapon = false;
         weapon.spawnW = false;
         create_platforms();
-        plats = [collisionBlocks, collisionBlocks2];
+        plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
         enemy = [];
         create_enemy();
         // weapon.position.x = collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20;

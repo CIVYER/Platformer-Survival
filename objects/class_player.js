@@ -116,6 +116,7 @@ class Player{
         for (let i = 0; i < this.collisionBlocks.first.length; i++) {
             const colBlock = this.collisionBlocks.first[i];
             const colBlock2 = this.collisionBlocks.sec[i];
+            const colBlock3 = this.collisionBlocks.tres[i];
             if(collision_bottom_hollow({
                 object1:this,
                 object2:colBlock
@@ -129,6 +130,16 @@ class Player{
             if(collision_bottom_hollow({
                 object1:this,
                 object2:colBlock2
+            })){
+                if(this.velocity.y > 0){
+                    this.onGround = true; 
+                    this.velocity.y = 3;
+                    this.position.y = colBlock2.top - this.height - 0.01
+                }
+            }
+            if(collision_bottom_hollow({
+                object1:this,
+                object2:colBlock3
             })){
                 if(this.velocity.y > 0){
                     this.onGround = true; 

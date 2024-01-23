@@ -55,12 +55,15 @@ class Platform{
             }
             if(this.top > canvas.height+50){
                 this.position.y = partner.top - 150;
-                this.width = 250
+                this.width = 100
                 if(this.position.pos == 'left'){
-                    this.position.x = getRandomInt(0, (canvas.width/2)+25);
+                    this.position.x = getRandomInt(0, (canvas.width/2));
                 }
                 else if(this.position.pos == 'right'){
-                    this.position.x = getRandomInt((canvas.width/2)-25, canvas.width-200)
+                    this.position.x = getRandomInt((canvas.width/2), canvas.width-200)
+                }
+                else if(this.position.pos == 'center'){
+                    this.position.x = getRandomInt((canvas.width/2)-200, canvas.width/2-200)
                 }
                 this.height = 7
 

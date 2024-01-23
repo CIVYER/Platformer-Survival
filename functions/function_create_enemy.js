@@ -8,7 +8,8 @@ function create_enemy(){
             },
             collisionBlocks:{
                 first:collisionBlocks,
-                sec:collisionBlocks2
+                sec:collisionBlocks2,
+                tres:collisionBlocks3
             },
             player:player,
             weapon:null,

@@ -51,6 +51,7 @@ class Enemy{
         for(let i = 0; i < this.platforms.first.length; i++){
             const colBlock = this.platforms.first[i];
             const colBlock2 = this.platforms.sec[i];
+            const colBlock3 = this.platforms.tres[i];
             if(collision_bottom_hollow({
                 object1:this,
                 object2:colBlock
@@ -78,6 +79,22 @@ class Enemy{
                     this.velocity.x = this.speed;
                 }
                 else if(this.right +this.velocity.x >= colBlock2.right && this.bottom <= colBlock2.top){
+                    this.velocity.x = this.speed * (-1);
+                }
+            }
+
+            if(collision_bottom_hollow({
+                object1:this,
+                object2:colBlock3
+            })){
+                if(this.velocity.y > 0){
+                    this.velocity.y = scrollSpeed; 
+                    this.position.y = colBlock3.top - this.height - 0.01;
+                }
+                if(this.left + this.velocity.x <= colBlock3.left && this.bottom <= colBlock3.top){
+                    this.velocity.x = this.speed;
+                }
+                else if(this.right +this.velocity.x >= colBlock3.right && this.bottom <= colBlock3.top){
                     this.velocity.x = this.speed * (-1);
                 }
             }
