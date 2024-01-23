@@ -46,7 +46,12 @@ class Player{
     
     drawHealth(){
         c.beginPath();
-        c.rect(this.position.x, this.position.y, this.health/2, 10);
+        c.rect(10, canvas.height - 30, 100*2, 20);
+        c.fillStyle = 'red';
+        c.fill();
+        c.closePath();
+        c.beginPath();
+        c.rect(10, canvas.height - 30, this.health*2, 20);
         c.fillStyle = 'green';
         c.fill();
         c.closePath();
