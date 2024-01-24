@@ -49,10 +49,10 @@ class Player{
 
         this.start = false;
 
-        this.walkingLeft = '../src/walkingLeft.png';
-        this.walkingRight = '../src/walkingRight.png';
-        this.jumpingLeft = '../src/jumpLeft.png';
-        this.jumpingRight = '../src/jumpRight.png';
+        this.walkingLeft = './src/walkingLeft.png';
+        this.walkingRight = './src/walkingRight.png';
+        this.jumpingLeft = './src/jumpLeft.png';
+        this.jumpingRight = './src/jumpRight.png';
         this.frame = 0;
         this.jumpFrame = 0;
         this.image = new Image();
