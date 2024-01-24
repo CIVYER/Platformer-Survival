@@ -2,6 +2,13 @@ const canvas = document.querySelector('canvas');
 const canvas_container = document.getElementById('canvas_container');
 const c = canvas.getContext('2d');
 
+const manaNum = document.getElementById('mana');
+const healthNum = document.getElementById('health');
+const manaBar = document.getElementById('mbar');
+const healthBar = document.getElementById('hbar');
+const expNum = document.getElementById('exp');
+const expBar = document.getElementById('expbar');
+
 const gravity = 1;
 const scrollSpeed = 3;
 
@@ -191,8 +198,14 @@ function game_loop(timeStamp){
     
     // resets the game//////////////////////////////////////////
         if(player.gameOver){
+            player.exp = 0;
+            player.level = 1;
             player.health = 100;
+            player.healthRegen = 1;
+            player.max_health = 100;
+            player.max_mana = 100;
             player.mana = 100;
+            player.manaRegen = 5;
             player.inChamber = 0;
             followPlat = undefined
             followPlat2 = undefined
@@ -213,6 +226,13 @@ function game_loop(timeStamp){
             player.gameOver = false;
         }
     }
+
+    manaNum.innerText = 'Mana:' + player.mana + '/' + player.max_mana;
+    healthNum.innerText = 'Health:' + player.health + '/' + player.max_health;
+    expNum.innerText = 'Level ' + player.level + ' Exp:' + player.expBar + '%';
+    healthBar.style.width = String(player.healthBar) + '%';
+    manaBar.style.width = String(player.manaBar) + '%';
+    expBar.style.width = String(player.expBar) + '%';
 }
 game_loop();
 

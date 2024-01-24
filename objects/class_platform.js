@@ -25,7 +25,7 @@ class Platform{
     update(){
         this.draw();
 
-        this.top = this.position.y;
+        this.top = this.position.y+2.5;
         this.left = this.position.x;
         this.bottom = this.position.y + this.height;
         this.right = this.position.x + this.width;

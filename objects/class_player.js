@@ -32,9 +32,19 @@ class Player{
         this.gameOver = false;
         
         this.mana = 100;
+        this.manaBar = Math.floor((this.mana/Math.pow(this.max_mana))*100);
+        this.max_mana = 100;
+        this.manaRegen = 5;
         this.manaRegenDelay = 0;
+
         this.health = 100;
+        this.healthBar = Math.floor((this.exp/Math.pow(this.max_health))*100);
+        this.max_health = 100;
+        this.healthRegen = 1;
         this.healthRegenDelay = 0;
+
+
+
         this.elapsedTimer = 0;
 
         this.start = false;
@@ -50,6 +60,10 @@ class Player{
         this.image.src = this.walkingLeft
         this.prevX = this.position.x;
         this.face = 'left';
+
+        this.exp = 0;
+        this.level = 1;
+        this.expBar = Math.floor((this.exp/Math.pow(this.level,2))*100);
     }
 
     draw(){
@@ -99,29 +113,6 @@ class Player{
         c.fill();
         c.closePath();
     }
-    
-    drawHealth(){
-        c.beginPath();
-        c.rect(10, canvas.height - 30, 100*2, 20);
-        c.fillStyle = 'red';
-        c.fill();
-        c.closePath();
-        c.beginPath();
-        c.rect(10, canvas.height - 30, this.health*2, 20);
-        c.fillStyle = 'green';
-        c.fill();
-        c.closePath();
-        c.beginPath();
-        c.rect(10, canvas.height - 60, 100*2, 20);
-        c.fillStyle = 'black';
-        c.fill();
-        c.closePath();
-        c.beginPath();
-        c.rect(10, canvas.height - 60, this.mana*2, 20);
-        c.fillStyle = 'blue';
-        c.fill();
-        c.closePath();
-    }
 
     update(){
         // console.log(this.velocity.y);
@@ -133,7 +124,6 @@ class Player{
         // c.fillRect(this.left, this.top, 30, 5)
         // c.fillRect(this.left, this.bottom, 30, 5)
         this.draw();
-        this.drawHealth();
 
         this.center.x = this.position.x + (this.width/2);
         this.center.y = this.position.y + (this.height/2);
@@ -154,7 +144,7 @@ class Player{
         this.bottom = this.position.y + this.height;
         this.top = this.position.y;
 
-        if (this.bottom + this.velocity.y + 1 > canvas.height && this.go == false) {
+        if (this.bottom + this.velocity.y > canvas.height && this.go == false) {
             this.velocity.y = 0;
             this.onGround = true;
         }
@@ -175,19 +165,45 @@ class Player{
         }
 
         if(this.health < 100 && this.healthRegenDelay+1000 < this.elapsedTimer){
-            this.health +=1;
+            this.health +=this.healthRegen;
+            if(this.health >= this.max_health){
+                this.health = this.max_health;
+            }
             this.healthRegenDelay = this.elapsedTimer;
         }
         if(this.mana < 100 && this.manaRegenDelay+1000 < this.elapsedTimer){
-            this.mana +=5;
-            if(this.mana >=100){
-                this.mana = 100;
+            this.mana +=this.manaRegen;
+            if(this.mana >=this.max_mana){
+                this.mana = this.max_mana;
             }
             this.manaRegenDelay = this.elapsedTimer;
         }
 
         if(this.health <= 0){
             this.gameOver = true;
+        }
+
+        this.expBar = Math.floor((this.exp/Math.pow(this.level,2))*100);
+        this.healthBar = Math.floor((this.health/this.max_health*100));
+        this.manaBar = Math.floor((this.mana/this.max_mana*100));
+        if(this.expBar >= 100){
+            this.level+=1;
+            
+            this.max_mana+=5;
+            this.mana+=5;
+            this.manaRegen+=1
+
+            this.max_health+=5;
+            this.health+=5;
+            this.healthRegen+=1
+            if(this.expBar > 100){
+                this.exp = this.expBar - 100;
+            }
+            else{
+                this.exp = 0;
+            }
+            console.log(this.mana, this.max_mana);
+            console.log(this.health, this.max_health);
         }
     }
     fall(){
