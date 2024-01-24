@@ -227,8 +227,8 @@ function game_loop(timeStamp){
         }
     }
 
-    manaNum.innerText = 'Mana:' + player.mana + '/' + player.max_mana;
-    healthNum.innerText = 'Health:' + player.health + '/' + player.max_health;
+    manaNum.innerText = 'Mana:' + player.mana + '+' + player.manaRegen + '/' + player.max_mana;
+    healthNum.innerText = 'Health:' + player.health + '+' + player.healthRegen + '/' + player.max_health;
     expNum.innerText = 'Level ' + player.level + ' Exp:' + player.expBar + '%';
     healthBar.style.width = String(player.healthBar) + '%';
     manaBar.style.width = String(player.manaBar) + '%';
