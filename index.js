@@ -116,18 +116,19 @@ function game_loop(timeStamp){
             collisionBlocks2[i].update();
             collisionBlocks3[i].update();
         }
+        if(player.hasWeapon){
+            for (let i = 0; i < bullet.length; i++) {
+                bullet[i].update();
+            }
+        }
         player.update();
         player.elapsedTimer = elapsed;
         for (let i = 0; i < enemy.length; i++) {  
             enemy[i].elapsedTime = elapsed;      
             enemy[i].update();
         }
-        weapon.update();
-        if(player.hasWeapon){
-            for (let i = 0; i < bullet.length; i++) {
-                bullet[i].update();
-            }
-        }
+
+        // weapon.update();
     
         if(key_pressed.w && player.onGround){
             player.velocity.y = -18;
@@ -162,20 +163,24 @@ function game_loop(timeStamp){
                 }
             }
         }
-        if((key_pressed.r) && player.inChamber >= bullet.length){
-            weapon.color = 'green';
-            setTimeout(() => {
-                player.inChamber = 0;
-                key_pressed.r = false;
-                weapon.color = 'black';
-            }, 1000);
-        }
-        else if(player.inChamber >= bullet.length){
-            weapon.color = 'red';
-        }
+        // if((key_pressed.r) && player.inChamber >= bullet.length){
+        //     weapon.color = 'green';
+        //     setTimeout(() => {
+        //         player.inChamber = 0;
+        //         key_pressed.r = false;
+        //         weapon.color = 'black';
+        //     }, 1000);
+        // }
+        // else if(player.inChamber >= bullet.length){
+        //     weapon.color = 'red';
+        // }
     
         //weapon x bullet 
-        if(key_pressed.mouseLeftClick && player.shot == false && player.inChamber < bullet.length && player.hasWeapon){
+        if(key_pressed.mouseLeftClick && player.shot == false && player.hasWeapon && player.mana >= 10){
+            player.mana -= 10;
+            if(player.inChamber > bullet.length-1){
+                player.inChamber = 0;
+            }
             bullet[player.inChamber].shoot();
             player.inChamber++;
             bulletDelay = elapsed;
@@ -190,6 +195,7 @@ function game_loop(timeStamp){
     // resets the game//////////////////////////////////////////
         if(player.gameOver){
             player.health = 100;
+            player.mana = 100;
             player.inChamber = 0;
             followPlat = undefined
             followPlat2 = undefined
@@ -199,7 +205,7 @@ function game_loop(timeStamp){
             collisionBlocks3 = [];
             player.position.x = canvas.width/2,
             player.position.y = canvas.height-100
-            player.hasWeapon = false;
+            // player.hasWeapon = false;
             weapon.spawnW = false;
             create_platforms();
             plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];

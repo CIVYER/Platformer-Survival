@@ -23,14 +23,16 @@ class Player{
 
         this.weapon = weapon;
         this.onGround = false;
-        this.hasWeapon = false;
+        this.hasWeapon = true;
         this.shot = false;
         this.inChamber = 0;
-
+        
         this.collisionBlocks = collisionBlocks;
         this.go = false;
         this.gameOver = false;
-
+        
+        this.mana = 100;
+        this.manaRegenDelay = 0;
         this.health = 100;
         this.healthRegenDelay = 0;
         this.elapsedTimer = 0;
@@ -90,12 +92,22 @@ class Player{
         c.fillStyle = 'green';
         c.fill();
         c.closePath();
+        c.beginPath();
+        c.rect(10, canvas.height - 60, 100*2, 20);
+        c.fillStyle = 'black';
+        c.fill();
+        c.closePath();
+        c.beginPath();
+        c.rect(10, canvas.height - 60, this.mana*2, 20);
+        c.fillStyle = 'blue';
+        c.fill();
+        c.closePath();
     }
 
     update(){
-        c.fillStyle = 'rgba(0,255,0,1)';
-        c.fillRect(this.position.x + this.width-25, this.position.y, 5, this.height)
-        c.fillRect(this.position.x + 20, this.position.y, 5, this.height)
+        // c.fillStyle = 'rgba(0,255,0,1)';
+        // c.fillRect(this.position.x + this.width-25, this.position.y, 5, this.height)
+        // c.fillRect(this.position.x + 20, this.position.y, 5, this.height)
         this.draw();
         this.drawHealth();
 
@@ -135,6 +147,10 @@ class Player{
         if(this.health < 100 && this.healthRegenDelay+1000 < this.elapsedTimer){
             this.health +=1;
             this.healthRegenDelay = this.elapsedTimer;
+        }
+        if(this.mana < 100 && this.manaRegenDelay+1000 < this.elapsedTimer){
+            this.mana +=5;
+            this.manaRegenDelay = this.elapsedTimer;
         }
 
         if(this.health <= 0){
