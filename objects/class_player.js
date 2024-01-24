@@ -64,7 +64,7 @@ class Player{
         this.frame = 0;
         this.image = new Image();
         this.prevX = this.position.x;
-        this.face = 'left';
+        this.face = 'right';
     }
 
     draw(){
@@ -106,8 +106,9 @@ class Player{
 
     update(){
         // c.fillStyle = 'rgba(0,255,0,1)';
-        // c.fillRect(this.position.x + this.width-25, this.position.y, 5, this.height)
-        // c.fillRect(this.position.x + 20, this.position.y, 5, this.height)
+        // c.fillRect(this.left, this.position.y, 5, this.height)
+        // c.fillRect(this.right, this.position.y, 5, this.height)
+        // c.fillRect(this.left, this.position.y, 36, 5)
         this.draw();
         this.drawHealth();
 
@@ -119,8 +120,14 @@ class Player{
         this.fall();
         this.cVertCol();
         //sets the sides coordinate per frame
-        this.left = this.position.x+20;
-        this.right = this.position.x + this.width-25;
+        if(this.face == 'left'){
+            this.left = this.center.x-15;
+            this.right = this.center.x+15;
+        }
+        else if(this.face == 'right'){
+            this.left = this.center.x-22;
+            this.right = this.center.x+9;
+        }
         this.bottom = this.position.y + this.height;
         this.top = this.position.y;
 
@@ -150,6 +157,9 @@ class Player{
         }
         if(this.mana < 100 && this.manaRegenDelay+1000 < this.elapsedTimer){
             this.mana +=5;
+            if(this.mana >=100){
+                this.mana = 100;
+            }
             this.manaRegenDelay = this.elapsedTimer;
         }
 

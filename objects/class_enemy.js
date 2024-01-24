@@ -125,7 +125,7 @@ class Enemy{
                 this.bullet[i].position.y = 0
                 this.bullet[i].position.x = 0;
                 this.bullet[i].radius = 0;
-                this.player.mana +=5
+                this.player.mana +=1
             }
         }
     }
