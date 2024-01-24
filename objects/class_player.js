@@ -39,44 +39,63 @@ class Player{
 
         this.start = false;
 
-        this.walkingLeft = [
-            '../src/walking/left/walking1.png',
-            '../src/walking/left/walking2.png',
-            '../src/walking/left/walking3.png',
-            '../src/walking/left/walking4.png',
-            '../src/walking/left/walking5.png',
-            '../src/walking/left/walking6.png',
-            '../src/walking/left/walking7.png',
-            '../src/walking/left/walking8.png',
-            '../src/walking/left/walking9.png',
-        ];
-        this.walkingRight = [
-            '../src/walking/right/walking1.png',
-            '../src/walking/right/walking2.png',
-            '../src/walking/right/walking3.png',
-            '../src/walking/right/walking4.png',
-            '../src/walking/right/walking5.png',
-            '../src/walking/right/walking6.png',
-            '../src/walking/right/walking7.png',
-            '../src/walking/right/walking8.png',
-            '../src/walking/right/walking9.png',
-        ];
+        this.walkingLeft = '../src/walkingLeft.png';
+        this.walkingRight = '../src/walkingRight.png';
+        this.jumpingLeft = '../src/jumpLeft.png';
+        this.jumpingRight = '../src/jumpRight.png';
         this.frame = 0;
+        this.jumpFrame = 0;
         this.image = new Image();
+
+        this.image.src = this.walkingLeft
         this.prevX = this.position.x;
-        this.face = 'right';
+        this.face = 'left';
     }
 
     draw(){
         c.beginPath();
-        if(this.face == 'left'){
-        this.image.src = this.walkingLeft[this.frame]
+        if(this.prevX+10 < this.position.x && this.onGround){
+            this.prevX = this.position.x;
+            this.frame += 1;
+            if(this.frame >8){
+                this.frame = 0;
+            }
         }
-        else if(this.face == 'right'){
-        this.image.src = this.walkingRight[this.frame]
+        if(this.prevX-10 > this.position.x && this.onGround){
+            this.prevX = this.position.x;
+            this.frame += 1;
+            if(this.frame >8){
+                this.frame = 0;
+            }
         }
-        c.drawImage(this.image,this.position.x, this.position.y, this.width, this.height);
+        if(this.onGround){
+            this.image.onload = ()=>{
+                this.width = this.image.width/9
+                // this.height = this.image.height
+            }
+            if(this.face == 'left'){
+                this.image.src = this.walkingLeft
+            }
+            else if(this.face == 'right'){
+                this.image.src = this.walkingRight
+            }
+            c.drawImage(this.image,this.frame*this.image.width/9,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height+25);
+        }
+        else if(!this.onGround || this.velocity.y > 1){
+            this.image.onload = ()=>{
+                this.width = this.image.width/6
+                // this.height = this.image.height
+            }
+            if(this.face == 'left'){            
+                this.image.src = this.jumpingLeft
+            }
+            else if(this.face == 'right'){            
+                this.image.src = this.jumpingRight
+            }
+            c.drawImage(this.image,this.jumpFrame*this.image.width/6,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height+25);
+        }
         // c.fillStyle = this.color;
+
         c.fill();
         c.closePath();
     }
@@ -105,10 +124,14 @@ class Player{
     }
 
     update(){
-        // c.fillStyle = 'rgba(0,255,0,1)';
-        // c.fillRect(this.left, this.position.y, 5, this.height)
-        // c.fillRect(this.right, this.position.y, 5, this.height)
-        // c.fillRect(this.left, this.position.y, 36, 5)
+        // console.log(this.velocity.y);
+        // c.fillStyle = 'rgba(0,255,0,0.5)';
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        // c.fillStyle = 'rgba(0,255,100,1)';
+        // c.fillRect(this.left, this.top, 5, this.height)
+        // c.fillRect(this.right, this.top, 5, this.height)
+        // c.fillRect(this.left, this.top, 30, 5)
+        // c.fillRect(this.left, this.bottom, 30, 5)
         this.draw();
         this.drawHealth();
 
@@ -170,9 +193,9 @@ class Player{
     fall(){
         this.position.y += this.velocity.y;
         this.velocity.y += gravity;
-        if(this.velocity.y >= 0){
-            // this.onGround = false;
-        }
+        // if(this.velocity.y >= 0){
+        //     this.onAir = false;
+        // }
 
     }
 

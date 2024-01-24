@@ -42,7 +42,7 @@ class Bullet{
     
     shoot(){
         if(key_pressed.mouseLeftClick && !(this.player.shot)){
-            this.radius = 8;
+            this.radius = 5;
             var wepXL = [
                 this.player.center.x - 7,
                 this.player.center.x - 17,
