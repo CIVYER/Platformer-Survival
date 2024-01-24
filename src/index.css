@@ -1,0 +1,90 @@
+html, body{
+    height: 100svh;
+}
+*{
+    margin: 0;
+}
+body{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* overflow: hidden; */
+}
+
+#body{
+    position: relative;
+    height: 500px;
+    width: 1000px;
+}
+
+#canvas_container{
+    /* flex: 1; */
+
+    height: 100%;
+    width: 100%;
+
+    border: 1px solid black;
+}
+
+.instruction{
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
+
+#manac, #healthc, #expc{
+    position: relative;
+    --toptop:20px;
+    position: absolute;
+    /* bottom: .4em;
+    left: .7em; */
+    top: var(--toptop);
+    left: 190px;
+
+    color: white;
+    background-color: red;
+    width: 200px;
+    height: 20px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#manac{
+    top: calc(var(--toptop) + 25px);
+    background-color: black;
+}
+
+#expc{
+    top: calc(var(--toptop) + 25px);
+    left: 400px;
+    background-color: black;
+}
+
+#mbar, #hbar, #expbar{
+    position: absolute;
+    width: 200px;
+    height: 20px;
+
+    top: 0;
+    left: 0;
+
+    z-index: 0;
+}
+
+#mbar{
+    background-color: blue;
+}
+#hbar{
+    background-color: green;
+}
+#expbar{
+    background-color: grey;
+}
+
+#health, #mana, #exp{
+    z-index: 1;
+}
