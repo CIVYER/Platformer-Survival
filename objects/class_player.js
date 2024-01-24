@@ -1,7 +1,7 @@
 class Player{
     constructor({position, collisionBlocks, weapon}){
-        this.height = 50;
-        this.width = 50;
+        this.height = 70;
+        this.width = 70;
         this.color = 'blue';
         this.position = {
             x:position.x,
@@ -36,12 +36,45 @@ class Player{
         this.elapsedTimer = 0;
 
         this.start = false;
+
+        this.walkingLeft = [
+            '../src/walking/left/walking1.png',
+            '../src/walking/left/walking2.png',
+            '../src/walking/left/walking3.png',
+            '../src/walking/left/walking4.png',
+            '../src/walking/left/walking5.png',
+            '../src/walking/left/walking6.png',
+            '../src/walking/left/walking7.png',
+            '../src/walking/left/walking8.png',
+            '../src/walking/left/walking9.png',
+        ];
+        this.walkingRight = [
+            '../src/walking/right/walking1.png',
+            '../src/walking/right/walking2.png',
+            '../src/walking/right/walking3.png',
+            '../src/walking/right/walking4.png',
+            '../src/walking/right/walking5.png',
+            '../src/walking/right/walking6.png',
+            '../src/walking/right/walking7.png',
+            '../src/walking/right/walking8.png',
+            '../src/walking/right/walking9.png',
+        ];
+        this.frame = 0;
+        this.image = new Image();
+        this.prevX = this.position.x;
+        this.face = 'left';
     }
 
     draw(){
         c.beginPath();
-        c.rect(this.position.x, this.position.y, this.width, this.height);
-        c.fillStyle = this.color;
+        if(this.face == 'left'){
+        this.image.src = this.walkingLeft[this.frame]
+        }
+        else if(this.face == 'right'){
+        this.image.src = this.walkingRight[this.frame]
+        }
+        c.drawImage(this.image,this.position.x, this.position.y, this.width, this.height);
+        // c.fillStyle = this.color;
         c.fill();
         c.closePath();
     }
@@ -60,6 +93,9 @@ class Player{
     }
 
     update(){
+        c.fillStyle = 'rgba(0,255,0,1)';
+        c.fillRect(this.position.x + this.width-25, this.position.y, 5, this.height)
+        c.fillRect(this.position.x + 20, this.position.y, 5, this.height)
         this.draw();
         this.drawHealth();
 
@@ -71,8 +107,8 @@ class Player{
         this.fall();
         this.cVertCol();
         //sets the sides coordinate per frame
-        this.left = this.position.x;
-        this.right = this.position.x + this.width;
+        this.left = this.position.x+20;
+        this.right = this.position.x + this.width-25;
         this.bottom = this.position.y + this.height;
         this.top = this.position.y;
 

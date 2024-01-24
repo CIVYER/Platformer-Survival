@@ -142,9 +142,25 @@ function game_loop(timeStamp){
         player.velocity.x = 0;
         if(key_pressed.a){
             player.velocity.x = -5;
+            player.face = 'left';
+            if(player.prevX-10 > player.position.x && player.onGround){
+                player.prevX = player.position.x;
+                player.frame += 1;
+                if(player.frame >8){
+                    player.frame = 0;
+                }
+            }
         }
         else if(key_pressed.d){
             player.velocity.x = 5;
+            player.face = 'right';
+            if(player.prevX+10 < player.position.x && player.onGround){
+                player.prevX = player.position.x;
+                player.frame += 1;
+                if(player.frame >8){
+                    player.frame = 0;
+                }
+            }
         }
         if((key_pressed.r) && player.inChamber >= bullet.length){
             weapon.color = 'green';
