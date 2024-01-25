@@ -114,9 +114,9 @@ class Enemy{
 
     bullet_hit(){
         for (let i = 0; i < this.bullet.length; i++){
-            if(collision_all_solid({
-                object1:this,
-                object2:this.bullet[i]
+            if(collision_bullet({
+                object2:this,
+                bullet:this.bullet[i]
             })){
                 this.spawned = false;
                 this.position.y = canvas.height + 100;
@@ -136,7 +136,7 @@ class Enemy{
             object1:this,
             object2:this.player
         })
-        && this.hitDelay+100 < this.elapsedTime
+        && this.hitDelay+1000 < this.elapsedTime
         ){
             this.hitDelay = this.elapsedTime;
             this.player.health -= 10;

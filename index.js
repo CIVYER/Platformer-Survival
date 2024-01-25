@@ -71,6 +71,22 @@ var key_pressed = {
     mouseLeftClick:false,
 };
 
+let enemy_test = new Enemy({
+    position:{
+        x:100,
+        y:canvas.height -100
+    },
+    collisionBlocks:{
+        first:collisionBlocks,
+        sec:collisionBlocks2,
+        tres:collisionBlocks3
+    },
+    player:player,
+    weapon:null,
+    bullet:bullet,
+    id:100
+});
+
 let start, bulletDelay;
 // The game Loop 
 var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
@@ -134,6 +150,17 @@ function game_loop(timeStamp){
             enemy[i].elapsedTime = elapsed;      
             enemy[i].update();
         }
+
+
+
+        // enemy_test.velocity.x = 0
+        // enemy_test.velocity.y = 0
+        // enemy_test.position.x = 300
+        // enemy_test.position.y = canvas.height - 50
+        // enemy_test.elapsedTime = elapsed;
+        // enemy_test.update()
+
+
 
         // weapon.update();
         if(!player.onGround || player.velocity.y > 1){

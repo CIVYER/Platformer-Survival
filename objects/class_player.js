@@ -164,14 +164,14 @@ class Player{
             this.gameOver = true;
         }
 
-        if(this.health < 100 && this.healthRegenDelay+1000 < this.elapsedTimer){
+        if(this.health < this.max_health && this.healthRegenDelay+1000 < this.elapsedTimer){
             this.health +=this.healthRegen;
             if(this.health >= this.max_health){
                 this.health = this.max_health;
             }
             this.healthRegenDelay = this.elapsedTimer;
         }
-        if(this.mana < 100 && this.manaRegenDelay+1000 < this.elapsedTimer){
+        if(this.mana < this.max_mana && this.manaRegenDelay+1000 < this.elapsedTimer){
             this.mana +=this.manaRegen;
             if(this.mana >=this.max_mana){
                 this.mana = this.max_mana;
