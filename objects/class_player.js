@@ -28,8 +28,6 @@ class Player{
         this.inChamber = 0;
         
         this.collisionBlocks = collisionBlocks;
-        this.go = false;
-        this.gameOver = false;
         
         this.mana = 100;
         this.manaBar = Math.floor((this.mana/Math.pow(this.max_mana))*100);
@@ -42,12 +40,14 @@ class Player{
         this.max_health = 100;
         this.healthRegen = 1;
         this.healthRegenDelay = 0;
-
-
-
+        
+        
+        
         this.elapsedTimer = 0;
-
-        this.start = false;
+        
+        this.start = true;
+        this.go = true;
+        this.gameOver = false;
 
         this.walkingLeft = './src/player/walkingLeft.png';
         this.walkingRight = './src/player/walkingRight.png';

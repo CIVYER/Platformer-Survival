@@ -14,6 +14,9 @@ const healthc = document.getElementById('healthc');
 const expc = document.getElementById('expc');
 const body = document.getElementById('body');
 
+const btn_start = document.getElementById('start');
+const btn_instruction = document.getElementById('instruction');
+const mainMenuContainer = document.getElementById('mainMenuContainer');
 
 
 const gravity = 1;
@@ -96,7 +99,7 @@ let enemy_test = new Enemy({
 
 let background = new bg();
 
-let start, bulletDelay;
+let start, bulletDelay, gameStart = false;
 // The game Loop 
 var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
 var followPlat;
@@ -104,14 +107,21 @@ var followPlat2;
 function game_loop(timeStamp){
     let btop = body.getBoundingClientRect().top;
     let bleft = body.getBoundingClientRect().left;
-    manac.style.top = String(btop+10) + 'px';
+    manac.style.top = String(btop+35) + 'px';
     manac.style.left = String(bleft+10) + 'px';
-    healthc.style.top = String(btop+35) + 'px';
+    healthc.style.top = String(btop+10) + 'px';
     healthc.style.left = String(bleft +10) + 'px';
     expc.style.top = String(btop+10) + 'px';
     expc.style.left = String(bleft + 230) + 'px';
-    
-    if(!player.start){
+    manac.style.visibility = 'hidden';
+    healthc.style.visibility = 'hidden';
+    expc.style.visibility = 'hidden';
+    if(player.start){
+        if(gameStart){
+            manac.style.visibility = 'visible';
+            healthc.style.visibility = 'visible';
+            expc.style.visibility = 'visible';
+        }
 
         if (start === undefined) {
             start = timeStamp;
@@ -161,18 +171,20 @@ function game_loop(timeStamp){
             collisionBlocks2[i].update();
             collisionBlocks3[i].update();
         }
-        if(player.hasWeapon){
-            for (let i = 0; i < bullet.length; i++) {
-                bullet[i].update();
+        if(gameStart){
+            if(player.hasWeapon){
+                for (let i = 0; i < bullet.length; i++) {
+                    bullet[i].update();
+                }
             }
+            player.update();
         }
-        player.update();
         player.elapsedTimer = elapsed;
         for (let i = 0; i < enemy.length; i++) {  
             enemy[i].elapsedTime = elapsed;      
             enemy[i].update();
         }
-
+        
 
 
         // enemy_test.velocity.x = 0
@@ -181,9 +193,11 @@ function game_loop(timeStamp){
         // enemy_test.position.y = canvas.height - 100
         // if(enemy_test.bottom + enemy_test.velocity.y > canvas.height){
         //     enemy_test.velocity.y = 0; 
+        //     enemy_test.face = 'right';
         // }
         // if(enemy_test.right + enemy_test.velocity.x >= canvas.width/2-200){
         //     enemy_test.velocity.x = -2;
+        //     enemy_test.face = 'left';
         // }
         // if(enemy_test.left + enemy_test.velocity.x <= 0){
         //     enemy_test.velocity.x = 2;
@@ -239,7 +253,7 @@ function game_loop(timeStamp){
         // }
     
         //weapon x bullet 
-        if(key_pressed.mouseLeftClick && player.shot == false && player.hasWeapon && player.mana >= 10){
+        if(gameStart && key_pressed.mouseLeftClick && player.shot == false && player.hasWeapon && player.mana >= 10){
             player.mana -= 10;
             if(player.inChamber > bullet.length-1){
                 player.inChamber = 0;
@@ -257,33 +271,10 @@ function game_loop(timeStamp){
     
     // resets the game//////////////////////////////////////////
         if(player.gameOver){
-            background.scroll = 0;
-            player.exp = 0;
-            player.level = 1;
-            player.health = 100;
-            player.healthRegen = 1;
-            player.max_health = 100;
-            player.max_mana = 100;
-            player.mana = 100;
-            player.manaRegen = 5;
-            player.inChamber = 0;
-            followPlat = undefined
-            followPlat2 = undefined
-            player.go = false;
-            collisionBlocks = [];
-            collisionBlocks2 = [];
-            collisionBlocks3 = [];
-            player.position.x = canvas.width/2,
-            player.position.y = canvas.height-100
-            // player.hasWeapon = false;
-            weapon.spawnW = false;
-            create_platforms();
-            plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
-            enemy = [];
-            create_enemy();
-            // weapon.position.x = collisionBlocks[9].position.x + collisionBlocks[9].width/2 - 20;
-            // weapon.position.y = collisionBlocks[9].top - 50;
-            player.gameOver = false;
+            // c.clearRect(0,0,canvas.width, canvas.height);
+            // player.start = false;
+            gameStart = false;
+            mainMenuContainer.style.visibility = 'visible';
         }
     }
 

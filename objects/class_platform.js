@@ -18,7 +18,7 @@ class Platform{
         this.image = new Image();
         this.image.src = './src/bg/platform.png';
         this.image.onload = ()=>{
-            this.width = this.image.width/5;
+            this.width = this.image.width/4;
             this.height = this.image.height/5;
         }
     }
