@@ -49,15 +49,28 @@ class Player{
 
         this.start = false;
 
-        this.walkingLeft = './src/walkingLeft.png';
-        this.walkingRight = './src/walkingRight.png';
-        this.jumpingLeft = './src/jumpLeft.png';
-        this.jumpingRight = './src/jumpRight.png';
+        this.walkingLeft = './src/player/walkingLeft.png';
+        this.walkingRight = './src/player/walkingRight.png';
+        this.jumpingLeft = './src/player/jumpLeft.png';
+        this.jumpingRight = './src/player/jumpRight.png';
         this.frame = 0;
         this.jumpFrame = 0;
         this.image = new Image();
-
         this.image.src = this.walkingLeft
+
+        this.imageWL = new Image();
+        this.imageWL.src = this.walkingLeft;
+        let scale = 100.5
+        this.imageWR = new Image();
+        this.imageWR.src = this.walkingRight;
+        this.imageJL = new Image();
+        this.imageJL.src = this.jumpingLeft;
+        this.imageJR = new Image();
+        this.imageJR.src = this.jumpingRight;
+
+
+
+
         this.prevX = this.position.x;
         this.face = 'left';
 
@@ -83,30 +96,36 @@ class Player{
             }
         }
         if(this.onGround){
+            let loaded = false;
             this.image.onload = ()=>{
-                this.width = this.image.width/9
-                // this.height = this.image.height
+                this.width = this.image.width/9;
+                this.height = this.image.height;
+                loaded = true;
             }
             if(this.face == 'left'){
                 this.image.src = this.walkingLeft
+                c.drawImage(this.imageWL,this.frame*this.image.width/9,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height);
             }
             else if(this.face == 'right'){
                 this.image.src = this.walkingRight
+                c.drawImage(this.imageWR,this.frame*this.image.width/9,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height);
             }
-            c.drawImage(this.image,this.frame*this.image.width/9,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height+25);
         }
-        else if(!this.onGround || this.velocity.y > 1){
+        else if(!this.onGround){
+            let loaded = false;
             this.image.onload = ()=>{
-                this.width = this.image.width/6
-                // this.height = this.image.height
+                this.width = this.image.width/6;
+                this.height = this.image.height;
+                loaded = true
             }
             if(this.face == 'left'){            
                 this.image.src = this.jumpingLeft
+                c.drawImage(this.imageJL,this.jumpFrame*this.image.width/6,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height);
             }
             else if(this.face == 'right'){            
                 this.image.src = this.jumpingRight
+                c.drawImage(this.imageJR,this.jumpFrame*this.image.width/6,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height);
             }
-            c.drawImage(this.image,this.jumpFrame*this.image.width/6,0,this.width, this.height,this.position.x, this.position.y, this.width, this.height+25);
         }
         // c.fillStyle = this.color;
 
@@ -190,11 +209,11 @@ class Player{
             this.level+=1;
             
             this.max_mana+=5;
-            this.mana+=5;
+            // this.mana+=5;
             this.manaRegen+=1
 
             this.max_health+=5;
-            this.health+=5;
+            // this.health+=5;
             this.healthRegen+=1
             if(this.expBar > 100){
                 this.exp = this.expBar - 100;
@@ -202,8 +221,6 @@ class Player{
             else{
                 this.exp = 0;
             }
-            console.log(this.mana, this.max_mana);
-            console.log(this.health, this.max_health);
         }
     }
     fall(){

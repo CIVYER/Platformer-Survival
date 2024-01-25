@@ -4,7 +4,7 @@ function create_platforms(){
     var plat_width = 100;
 
     for (let i = 0; i < plat_num; i++) {
-        var yFormula = canvas.height - (10+(130*(i)));
+        var yFormula = canvas.height - ((130*(i)));
         collisionBlocks.push(    new Platform({
             position:{
                 x:getRandomInt(0, (canvas.width/2)),

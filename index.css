@@ -10,13 +10,15 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 #body{
     position: relative;
-    height: 500px;
-    width: 1000px;
+    /* height: 550px;  
+    width: 1040px; */
+    height: 100%;
+    width: 100%;
 }
 
 #canvas_container{
@@ -35,13 +37,16 @@ body{
 }
 
 #manac, #healthc, #expc{
+    z-index: 100;
     position: relative;
-    --toptop:20px;
+    /* --toptop:20px;   */
     position: absolute;
     /* bottom: .4em;
     left: .7em; */
-    top: var(--toptop);
-    left: 190px;
+    /* top: auto; */
+    /* left: auto; */
+    /* right: auto; */
+    /* bottom: auto; */
 
     color: white;
     background-color: red;
@@ -51,16 +56,17 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    
 }
 
 #manac{
-    top: calc(var(--toptop) + 25px);
+    /* top: calc(var(--toptop) + 25px); */
     background-color: black;
 }
 
 #expc{
-    top: calc(var(--toptop) + 25px);
-    left: 400px;
+    /* top: calc(var(--toptop) + 25px); */
+    /* left: 400px; */
     background-color: black;
 }
 
@@ -87,4 +93,9 @@ body{
 
 #health, #mana, #exp{
     z-index: 1;
+}
+
+canvas{
+    /* background-color: black; */
+    z-index: -1;
 }

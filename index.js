@@ -9,6 +9,13 @@ const healthBar = document.getElementById('hbar');
 const expNum = document.getElementById('exp');
 const expBar = document.getElementById('expbar');
 
+const manac = document.getElementById('manac');
+const healthc = document.getElementById('healthc');
+const expc = document.getElementById('expc');
+const body = document.getElementById('body');
+
+
+
 const gravity = 1;
 const scrollSpeed = 3;
 
@@ -74,7 +81,7 @@ var key_pressed = {
 let enemy_test = new Enemy({
     position:{
         x:100,
-        y:canvas.height -100
+        y:canvas.height -300
     },
     collisionBlocks:{
         first:collisionBlocks,
@@ -87,12 +94,23 @@ let enemy_test = new Enemy({
     id:100
 });
 
+let background = new bg();
+
 let start, bulletDelay;
 // The game Loop 
 var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
 var followPlat;
 var followPlat2;
 function game_loop(timeStamp){
+    let btop = body.getBoundingClientRect().top;
+    let bleft = body.getBoundingClientRect().left;
+    manac.style.top = String(btop+10) + 'px';
+    manac.style.left = String(bleft+10) + 'px';
+    healthc.style.top = String(btop+35) + 'px';
+    healthc.style.left = String(bleft +10) + 'px';
+    expc.style.top = String(btop+10) + 'px';
+    expc.style.left = String(bleft + 230) + 'px';
+    
     if(!player.start){
 
         if (start === undefined) {
@@ -102,6 +120,10 @@ function game_loop(timeStamp){
         const elapsed = timeStamp - start;
         requestAnimationFrame(game_loop);
         c.clearRect(0,0,canvas.width,canvas.height);
+        background.update();
+        if(background.scroll < 324 && player.go){
+            background.scroll++;
+        }
         if(weapon.spawnW == false){
             var selectPlats = getRandomInt(0,3);
             var selectPlats2 = getRandomInt(0,20);
@@ -155,9 +177,19 @@ function game_loop(timeStamp){
 
         // enemy_test.velocity.x = 0
         // enemy_test.velocity.y = 0
-        // enemy_test.position.x = 300
-        // enemy_test.position.y = canvas.height - 50
+        // enemy_test.position.x = 0
+        // enemy_test.position.y = canvas.height - 100
+        // if(enemy_test.bottom + enemy_test.velocity.y > canvas.height){
+        //     enemy_test.velocity.y = 0; 
+        // }
+        // if(enemy_test.right + enemy_test.velocity.x >= canvas.width/2-200){
+        //     enemy_test.velocity.x = -2;
+        // }
+        // if(enemy_test.left + enemy_test.velocity.x <= 0){
+        //     enemy_test.velocity.x = 2;
+        // }
         // enemy_test.elapsedTime = elapsed;
+        
         // enemy_test.update()
 
 
@@ -225,6 +257,7 @@ function game_loop(timeStamp){
     
     // resets the game//////////////////////////////////////////
         if(player.gameOver){
+            background.scroll = 0;
             player.exp = 0;
             player.level = 1;
             player.health = 100;

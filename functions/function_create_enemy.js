@@ -1,5 +1,5 @@
 function create_enemy(){
-    var emenemynum = 10;
+    var emenemynum = 20;
     for (let i = 0; i < emenemynum; i++) {
         enemy.push(new Enemy({
             position:{

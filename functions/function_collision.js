@@ -16,9 +16,6 @@ function collision_bullet({object2,bullet}){
     let a = bullet.position.x - object2.center.x;
     let b = bullet.position.y - object2.center.y;
     let c = Math.hypot(a,b);
-    let size = object2.width;
-
-    console.log(size, c);
-
+    let size = object2.height; 
     return(size >= c);
 }
