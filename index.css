@@ -131,3 +131,43 @@ canvas{
     object-fit: contain;
     height: 50%;
 }
+
+#movement1, #movement2, #jumpUp, #dropDown, #shootEnem{
+    --right:500px;
+    position: absolute;
+    right: var(--right);
+    bottom: 10em;
+
+    z-index: 1000;
+
+    visibility: hidden;
+}
+
+#movement1{
+    right: calc(var(--right) + 60px);
+}
+
+#jumpUp, #dropDown, #shootEnem{
+    right: calc(var(--right) + 350px);
+    bottom: 15em;
+}
+
+#tDone{
+    position: absolute;
+    top: 5em;
+    left: 1em;
+
+    height: 200px;
+    width: 300px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    z-index: 1000;
+    visibility: hidden;
+}

@@ -10,7 +10,7 @@ class Bullet{
             y:0
         }
         this.angle = 0;
-        this.radius = 8;
+        this.radius = 0;
         this.color = 'blue';
 
         this.top = this.position.y - this.radius;

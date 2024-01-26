@@ -22,7 +22,8 @@ class Player{
         this.right = this.position.x + this.width;
 
         this.weapon = weapon;
-        this.onGround = false;
+        this.onGround = true;
+        this.onPlat = false;
         this.hasWeapon = true;
         this.shot = false;
         this.inChamber = 0;
@@ -133,6 +134,58 @@ class Player{
         c.closePath();
     }
 
+    fall(){
+        this.position.y += this.velocity.y;
+        this.velocity.y += gravity;
+        // if(this.velocity.y >= 0){
+        //     this.onAir = false;
+        // }
+
+    }
+
+    cVertCol(){
+        for (let i = 0; i < this.collisionBlocks.first.length; i++) {
+            const colBlock = this.collisionBlocks.first[i];
+            const colBlock2 = this.collisionBlocks.sec[i];
+            const colBlock3 = this.collisionBlocks.tres[i];
+            if(collision_bottom_hollow({
+                object1:this,
+                object2:colBlock
+            })){
+                if(this.velocity.y > 0){
+                    this.onPlat = true;
+                    this.onGround = true; 
+                    this.velocity.y = 3;
+                    this.position.y = colBlock.top - this.height - 0.01
+                }
+            }
+            if(collision_bottom_hollow({
+                object1:this,
+                object2:colBlock2
+            })){
+                if(this.velocity.y > 0){
+                    this.onPlat = true;
+                    this.onGround = true; 
+                    this.velocity.y = 3;
+                    this.position.y = colBlock2.top - this.height - 0.01
+                }
+            }
+            if(collision_bottom_hollow({
+                object1:this,
+                object2:colBlock3
+            })){
+                if(this.velocity.y > 0){
+                    this.onPlat = true;
+                    this.onGround = true; 
+                    this.velocity.y = 3;
+                    this.position.y = colBlock3.top - this.height - 0.01
+                }
+            }
+
+
+        }
+    }
+
     update(){
         // console.log(this.velocity.y);
         // c.fillStyle = 'rgba(0,255,0,0.5)';
@@ -150,6 +203,8 @@ class Player{
         this.position.x += this.velocity.x;
         
         this.fall();
+
+        this.onPlat = false;
         this.cVertCol();
         //sets the sides coordinate per frame
         if(this.face == 'left'){
@@ -177,10 +232,6 @@ class Player{
         })){
             this.weapon.color = 'black';
             this.hasWeapon = true;
-        }
-
-        if(this.top >= canvas.height + 150){
-            this.gameOver = true;
         }
 
         if(this.health < this.max_health && this.healthRegenDelay+1000 < this.elapsedTimer){
@@ -222,53 +273,10 @@ class Player{
                 this.exp = 0;
             }
         }
-    }
-    fall(){
-        this.position.y += this.velocity.y;
-        this.velocity.y += gravity;
-        // if(this.velocity.y >= 0){
-        //     this.onAir = false;
-        // }
 
-    }
-
-    cVertCol(){
-        for (let i = 0; i < this.collisionBlocks.first.length; i++) {
-            const colBlock = this.collisionBlocks.first[i];
-            const colBlock2 = this.collisionBlocks.sec[i];
-            const colBlock3 = this.collisionBlocks.tres[i];
-            if(collision_bottom_hollow({
-                object1:this,
-                object2:colBlock
-            })){
-                if(this.velocity.y > 0){
-                    this.onGround = true; 
-                    this.velocity.y = 3;
-                    this.position.y = colBlock.top - this.height - 0.01
-                }
-            }
-            if(collision_bottom_hollow({
-                object1:this,
-                object2:colBlock2
-            })){
-                if(this.velocity.y > 0){
-                    this.onGround = true; 
-                    this.velocity.y = 3;
-                    this.position.y = colBlock2.top - this.height - 0.01
-                }
-            }
-            if(collision_bottom_hollow({
-                object1:this,
-                object2:colBlock3
-            })){
-                if(this.velocity.y > 0){
-                    this.onGround = true; 
-                    this.velocity.y = 3;
-                    this.position.y = colBlock3.top - this.height - 0.01
-                }
-            }
-
-
+        //gameOver
+        if(this.top >= canvas.height + 70){
+            this.gameOver = true;
         }
     }
 }

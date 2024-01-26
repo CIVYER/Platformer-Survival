@@ -169,6 +169,7 @@ class Enemy{
             })){
                 this.spawned = false;
                 this.position.y = canvas.height + 100;
+                this.face = 'right';
                 this.bullet[i].velocity.y = 0
                 this.bullet[i].velocity.x = 0;
                 this.bullet[i].position.y = 0
@@ -200,11 +201,11 @@ class Enemy{
         this.spawned = false;
         const colBlocks = [this.platforms.first, this.platforms.sec, this.platforms.tres];
         const firstnum = getRandomInt(0,3);
-        const secondnum = getRandomInt(0,20);
-        if (colBlocks[firstnum][secondnum].inNegative && this.spawned == false && colBlocks[firstnum][secondnum].occupant == null) {
+        const secondnum = getRandomInt(0,this.platforms.first.length);
+        if (colBlocks[firstnum][secondnum].inNegative && this.spawned == false) {
             this.velocity.x = 0
-            this.position.y = colBlocks[firstnum][secondnum].top - 10; 
-            this.position.x = colBlocks[firstnum][secondnum].position.x + colBlocks[firstnum][secondnum].width/2; 
+            this.position.y = colBlocks[firstnum][secondnum].top - 100; 
+            this.position.x = colBlocks[firstnum][secondnum].position.x + colBlocks[firstnum][secondnum].width/2 - 50; 
             setTimeout(() => {
                 this.velocity.x = this.speed;
             }, 1000);
