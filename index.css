@@ -130,6 +130,8 @@ canvas{
 #mainMenu img{
     object-fit: contain;
     height: 50%;
+
+    cursor: unset;
 }
 
 #movement1, #movement2, #jumpUp, #dropDown, #shootEnem{
@@ -170,4 +172,8 @@ canvas{
 
     z-index: 1000;
     visibility: hidden;
+}
+
+canvas{
+    cursor: crosshair;
 }

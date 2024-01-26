@@ -84,7 +84,7 @@ class Bullet{
             }
             this.position.y = wepY[this.player.frame];
 
-            var theAngle = Math.atan2(-((mouseX-20) - this.position.x+10), ((mouseY) - this.player.center.y))
+            var theAngle = Math.atan2(-((mouseX-10) - this.position.x+10), ((mouseY) - this.player.center.y))
 
             this.velocity.x = (Math.sin(-theAngle) * 30);
             this.velocity.y = (Math.cos(-theAngle) * 30);
