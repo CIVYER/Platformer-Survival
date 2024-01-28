@@ -40,6 +40,9 @@ class Enemy{
         
         this.imageWR = new Image();
         this.imageWR.src = './src/enemy/eWalkRight.png';
+
+        this.imageDead = new Image();
+        this.imageDead.src = './src/enemy/eDead.png';
         
         this.imageWR.onload = ()=>{
             this.width = this.imageWR.width/8;
@@ -49,44 +52,69 @@ class Enemy{
             this.width = this.imageWL.width/8;
             this.height = this.imageWL.height;
         }
+        this.imageDead.onload = ()=>{
+            this.width = this.imageDead.width/3;
+            this.height = this.imageDead.height;
+        }
 
         this.face = 'right';
+        this.dead = false;
         this.prevX = this.position.x;
         this.currFrame = 0;
         this.buffer = 0;
+
+        this.tagged = 0;
     }
 
     draw(){
         c.beginPath();
         this.buffer++
-        if(this.face == 'left'){
-            c.drawImage(
-                this.imageWL,
-                this.currFrame*this.width, 
-                0,
-                this.width,
-                this.height,
-                this.position.x, this.position.y,
-                this.width, this.height
-                );
+
+        if((this.face == 'left' || this.face == 'right') && !this.dead){
+            if(this.buffer > 7){
+                this.buffer = 0;
+                this.currFrame++;
+                if(this.currFrame >= 8){
+                    this.currFrame = 0;
+                }
             }
-        else if(this.face == 'right'){ 
-            c.drawImage(
-                this.imageWR,
-                this.currFrame*this.width, 
-                0,
-                this.width,
-                this.height,
-                this.position.x, this.position.y,
-                this.width, this.height
-                );
+            if(this.face == 'left'){
+                c.drawImage(
+                    this.imageWL,
+                    this.currFrame*this.width, 
+                    0,
+                    this.width,
+                    this.height,
+                    this.position.x, this.position.y,
+                    this.width, this.height
+                    );
+                }
+            else if(this.face == 'right'){ 
+                c.drawImage(
+                    this.imageWR,
+                    this.currFrame*this.width, 
+                    0,
+                    this.width,
+                    this.height,
+                    this.position.x, this.position.y,
+                    this.width, this.height
+                    );
+            }
         }
-        if(this.buffer > 7){
-            this.buffer = 0;
-            this.currFrame++;
-            if(this.currFrame >= 8){
-                this.currFrame = 0;
+        else if(this.dead){ 
+            if(this.buffer > 30){
+                this.buffer = 0;
+                this.currFrame++;
             }
+            c.drawImage(
+                this.imageDead,
+                this.currFrame*this.width, 
+                0,
+                this.width,
+                this.height,
+                this.position.x, this.position.y,
+                this.width, this.height
+                );
         }
         c.closePath();
     }
@@ -166,17 +194,21 @@ class Enemy{
             if(collision_bullet({
                 object2:this,
                 bullet:this.bullet[i]
-            })){
-                this.spawned = false;
-                this.position.y = canvas.height + 100;
-                this.face = 'right';
+            }) && !this.dead){
+                this.dead = true
+                this.buffer = 0;
+                this.currFrame = 0;
+                this.velocity.x = 0;
                 this.bullet[i].velocity.y = 0
                 this.bullet[i].velocity.x = 0;
-                this.bullet[i].position.y = 0
-                this.bullet[i].position.x = 0;
+                this.bullet[i].position.y = 0;
+                this.bullet[i].position.x = -100;
                 this.bullet[i].radius = 0;
+
+                this.player.exp += 1*this.player.multiplier;
+                this.player.score += 1*(this.player.multiplier);
+                this.player.multiplier += .5;
                 this.player.mana +=1
-                this.player.exp += 1;
             }
         }
     }
@@ -187,6 +219,7 @@ class Enemy{
             object2:this.player
         })
         && this.hitDelay+500 < this.elapsedTime
+        && !this.dead
         ){
             this.hitDelay = this.elapsedTime;
             this.player.health -= 10;
@@ -228,7 +261,14 @@ class Enemy{
         this.position.x += this.velocity.x;
         
         
-        if(this.top >= canvas.height){
+        if(this.top >= canvas.height || (this.dead && this.currFrame >=3)){
+            if(this.dead){
+                this.currFrame = 0;
+                this.dead = false;
+                this.spawned = false;
+                this.face = 'right';
+                this.velocity.x = 1;
+            }
             this.randSpawn();
         }
         this.center = {

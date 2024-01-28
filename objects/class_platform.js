@@ -66,6 +66,7 @@ class Platform{
                 this.position.y += Math.abs(this.elements.player.velocity.y);
             }
             if(this.top > canvas.height+50){
+                this.elements.player.score += 5;
                 this.position.y = partner.top - 150;
                 // this.width = 100
                 if(this.position.pos == 'left'){

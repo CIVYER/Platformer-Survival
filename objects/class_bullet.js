@@ -42,6 +42,13 @@ class Bullet{
     
     shoot(){
         if(key_pressed.mouseLeftClick && !(this.player.shot)){
+            this.player.mana -= 10;
+            this.player.inChamber++;
+            if(this.player.inChamber > bullet.length-1){
+                this.player.inChamber = 0;
+            }
+            this.player.shot = true;
+
             this.radius = 5;
             var wepXL = [
                 this.player.center.x - 7,
@@ -88,10 +95,6 @@ class Bullet{
 
             this.velocity.x = (Math.sin(-theAngle) * 30);
             this.velocity.y = (Math.cos(-theAngle) * 30);
-
-
-            // this.position.x = this.player.center.x + Math.sin(-this.angle)*55
-            // this.position.y = this.player.center.y + Math.cos(-this.angle)*55
         }
     }
 }

@@ -63,11 +63,11 @@ const Tweapon = new Weapon({
 create_platforms();
 
 let bullet = [];
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 100; i++) {
     bullet.push(new Bullet({
         position:{
-            x:weapon.position.x,
-            y:weapon.position.y
+            x:-100,
+            y:canvas.height + 1000
         },
         weapon:weapon,
         player:player
@@ -232,17 +232,11 @@ function game_loop(timeStamp){
 
             //bullet 
             if(key_pressed.mouseLeftClick && player.shot == false && player.hasWeapon && player.mana >= 10){
-                player.mana -= 10;
-                if(player.inChamber > bullet.length-1){
-                    player.inChamber = 0;
-                }
                 bullet[player.inChamber].shoot();
-                player.inChamber++;
                 bulletDelay = elapsed;
-                player.shot = true;
             }
             
-            if(bulletDelay+500 < elapsed){
+            if(bulletDelay+250 < elapsed){
                 player.shot = false;
             }
         
@@ -255,7 +249,7 @@ function game_loop(timeStamp){
                 mainMenuContainer.style.visibility = 'visible';
             }
         }
-    
+        
         manaNum.innerText = 'Mana:' + player.mana + '+' + player.manaRegen + '/' + player.max_mana;
         healthNum.innerText = 'Health:' + player.health + '+' + player.healthRegen + '/' + player.max_health;
         expNum.innerText = 'Level ' + player.level + ' Exp:' + player.expBar + '%';
@@ -351,20 +345,17 @@ function game_loop(timeStamp){
 
 
         //bullet 
-        if(key_pressed.mouseLeftClick && Tplayer.shot == false && Tplayer.hasWeapon && Tplayer.mana >= 10 && Tdown){
-            Tplayer.mana -= 10;
+        if(key_pressed.mouseLeftClick  && Tplayer.hasWeapon && Tplayer.mana >= 10 && Tdown && !Tplayer.shot){
             if(Tplayer.inChamber > Tbullet.length-1){
                 Tplayer.inChamber = 0;
             }
             Tbullet[Tplayer.inChamber].shoot();
-            Tplayer.inChamber++;
+            // Tplayer.inChamber++;
             bulletDelay = elapsed;
-            Tplayer.shot = true;
             tDone.style.visibility = 'visible';
             shootEnem.style.visibility = 'hidden';
         }
-        
-        if(bulletDelay+500 < elapsed){
+        if(bulletDelay+250 < elapsed){ 
             Tplayer.shot = false;
         }
 
@@ -375,7 +366,6 @@ function game_loop(timeStamp){
         manaBar.style.width = String(Tplayer.manaBar) + '%';
         expBar.style.width = String(Tplayer.expBar) + '%';
 
-        console.log(key_pressed.w);
         if(Tplayer.health <= 0){
             btn_instruction.click();
         }
@@ -384,6 +374,9 @@ function game_loop(timeStamp){
 
     
 }
+// window.onload = ()=>{
+//     btn_instruction.click();
+// }
 const movement1 = document.getElementById('movement1');
 const movement2 = document.getElementById('movement2');
 const jumpUp = document.getElementById('jumpUp');

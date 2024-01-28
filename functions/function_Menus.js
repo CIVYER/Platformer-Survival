@@ -2,10 +2,14 @@ function startGame(){
     mainMenuContainer.style.visibility = 'hidden';
     background.scroll = 0;
 
+    player.score = 0
+    player.multiplier = 1;
+    player.currMultiplier = 1;
+
     player.exp = 0;
     player.level = 1;
 
-    player.max_health = 100;
+    player.max_health = 50;
     player.health = player.max_health;
     player.healthRegen = 1;
 
@@ -99,7 +103,7 @@ function start_tutorial(){
         id:100
     });
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 100; i++) {
         Tbullet.push(new Bullet({
             position:{
                 x:0,
@@ -109,6 +113,9 @@ function start_tutorial(){
             player:Tplayer
         }));
     }
+
+    // Tplayer.max_mana = 1000000;
+    // Tplayer.manaRegen = 100000000000000;
 }    
 
 btn_start.addEventListener('click', startGame);

@@ -42,8 +42,6 @@ class Player{
         this.healthRegen = 1;
         this.healthRegenDelay = 0;
         
-        
-        
         this.elapsedTimer = 0;
         
         this.start = true;
@@ -77,7 +75,13 @@ class Player{
 
         this.exp = 0;
         this.level = 1;
-        this.expBar = Math.floor((this.exp/Math.pow(this.level,2))*100);
+        this.expBar = Math.floor((this.exp/this.level * 2)*100);
+        
+        this.multiplierTimer = 0;
+        this.multiplierTimerBar = 9;
+        this.multiplier = 1;
+        this.currMultiplier = 1;
+        this.score = 0;
     }
 
     draw(){
@@ -185,9 +189,30 @@ class Player{
 
         }
     }
-
+    drawScore(){
+        this.multiplierTimer+=1;
+        console.log(this.multiplierTimer)
+        if(this.multiplier > 1){
+            if(this.currMultiplier != this.multiplier){
+                this.multiplierTimer = 0;
+                this.currMultiplier = this.multiplier;
+            }
+            else if(this.multiplierTimer >= 100){
+                this.multiplierTimer = 0;
+                this.score
+                this.multiplier = 1;
+                this.currMultiplier = 1;
+            }
+            c.fillText(`Combox${this.multiplier}`,10,120);
+            c.fillRect(10, 135,110 - ((this.multiplierTimer/100) * 100),5)
+        }
+        c.fillStyle = 'black';
+        c.font = '30px Comic Sans MS';
+        c.fillText(`Score:${Math.floor(this.score)}`,10,85)
+    }
     update(){
-        // console.log(this.velocity.y);
+
+        this.drawScore();
         // c.fillStyle = 'rgba(0,255,0,0.5)';
         // c.fillRect(this.position.x, this.position.y, this.width, this.height)
         // c.fillStyle = 'rgba(0,255,100,1)';
@@ -253,7 +278,7 @@ class Player{
             this.gameOver = true;
         }
 
-        this.expBar = Math.floor((this.exp/Math.pow(this.level,2))*100);
+        this.expBar = Math.floor((this.exp/(this.level*2))*100);
         this.healthBar = Math.floor((this.health/this.max_health*100));
         this.manaBar = Math.floor((this.mana/this.max_mana*100));
         if(this.expBar >= 100){
@@ -267,7 +292,9 @@ class Player{
             // this.health+=5;
             this.healthRegen+=1
             if(this.expBar > 100){
-                this.exp = this.expBar - 100;
+                if(this.exp > (this.level*2)){
+                    this.exp = this.exp-(this.level*2);
+                }
             }
             else{
                 this.exp = 0;
