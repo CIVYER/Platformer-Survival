@@ -116,7 +116,7 @@ canvas{
     justify-content: center;
 }
 
-#mainMenu{
+#mainMenu, #gameOver{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -127,7 +127,16 @@ canvas{
     width: 500px;
 }
 
-#mainMenu img{
+/* #mainMenu{
+    display: none;
+} */
+
+#gameOver{
+    visibility: hidden;
+    position: absolute;
+}
+
+#mainMenu img, #gameOver img{
     object-fit: contain;
     height: 50%;
 

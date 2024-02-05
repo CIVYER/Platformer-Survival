@@ -16,13 +16,18 @@ const expc = document.getElementById('expc');
 const expNum = document.getElementById('exp');
 const expBar = document.getElementById('expbar');
 
+const highscore = document.getElementById('highscore');
+const score = document.getElementById('score');
+const btn_retry = document.getElementById('retry');
+const gameOver = document.getElementById('gameOver');
 
 const btn_start = document.getElementById('start');
 const btn_instruction = document.getElementById('instructions');
 const mainMenuContainer = document.getElementById('mainMenuContainer');
+const mainMenu = document.getElementById('mainMenu');
 
-const gravity = 1;
-const scrollSpeed = 3;
+var gravity = 1;
+var scrollSpeed = 3;
 
 canvas.height = canvas_container.getBoundingClientRect().height;
 canvas.width = canvas_container.getBoundingClientRect().width;
@@ -107,13 +112,21 @@ let enemy_test = new Enemy({
 
 const background = new bg();
 
-let start, bulletDelay, gameStart = false;
+let start, bulletDelay, gameStart = false, platformSpeedMultiplierTimer, jumpMultiplier = 1;
 
 // The game Loop 
 var plats = [collisionBlocks, collisionBlocks2, collisionBlocks3];
 var followPlat;
 var followPlat2;
+localStorage.setItem('score', 0);
 function game_loop(timeStamp){
+
+    
+    if(localStorage.getItem('highscore') === null){
+        localStorage.setItem('highscore', 0);
+    }
+
+
     var btop = body.getBoundingClientRect().top;
     var bleft = body.getBoundingClientRect().left;
     manac.style.top = String(btop+35) + 'px';
@@ -129,9 +142,16 @@ function game_loop(timeStamp){
     if (start === undefined) {
         start = timeStamp;
         bulletDelay = timeStamp;
+        platformSpeedMultiplierTimer = timeStamp;
     }
     const elapsed = timeStamp - start;
     requestAnimationFrame(game_loop);
+    if(platformSpeedMultiplierTimer + 30000 < elapsed && scrollSpeed < 10 && player.go){
+        scrollSpeed += 0.5;
+        jumpMultiplier += 0.5;
+        // gravity += scrollSpeed/3;
+        platformSpeedMultiplierTimer = elapsed;
+    }
     c.clearRect(0,0,canvas.width,canvas.height);
     background.update();
     if(player.start){
@@ -210,7 +230,7 @@ function game_loop(timeStamp){
                 player.jumpFrame = 0;
             }
             if(key_pressed.w && player.onGround){
-                player.velocity.y = -18;
+                player.velocity.y = (-18) + -(jumpMultiplier);
                 player.onGround = false;
             }
             else if(key_pressed.s && player.onGround == true && player.onPlat){
@@ -218,6 +238,9 @@ function game_loop(timeStamp){
                 player.bottom += 11;
                 player.velocity.y = 3;
                 player.onGround = false;
+            }
+            if(!key_pressed.w && !player.onGround){
+                player.velocity.y += gravity/2;
             }
             player.velocity.x = 0;
             if(key_pressed.a){
@@ -245,7 +268,17 @@ function game_loop(timeStamp){
             if(player.gameOver){
                 // c.clearRect(0,0,canvas.width, canvas.height);
                 // player.start = false;
+
+
+                if(Math.floor(player.score) >= localStorage.getItem('highscore')){
+                    localStorage.setItem('highscore', Math.floor(player.score));
+                }
+
+                highscore.innerText = "High Score: " + localStorage.getItem("highscore");
+                score.innerText = "Score: " + Math.floor(player.score);
                 gameStart = false;
+                gameOver.style.visibility = 'visible';
+                gameOver.style.position = 'initial';
                 mainMenuContainer.style.visibility = 'visible';
             }
         }

@@ -62,9 +62,9 @@ class Platform{
                 partner = this.elements.platforms[this.elements.platforms.length - this.num-1];
             }
             this.position.y += scrollSpeed;
-            if(this.elements.player.top - this.elements.player.velocity.y <= Math.abs(this.elements.player.velocity.y)){
-                this.position.y += Math.abs(this.elements.player.velocity.y);
-            }
+            // if(this.elements.player.top - this.elements.player.velocity.y <= Math.abs(this.elements.player.velocity.y)){
+            //     this.position.y += Math.abs(this.elements.player.velocity.y);
+            // }
             if(this.top > canvas.height+50){
                 this.elements.player.score += 5;
                 this.position.y = partner.top - 150;

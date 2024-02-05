@@ -1,6 +1,14 @@
 function startGame(){
     mainMenuContainer.style.visibility = 'hidden';
+    gameOver.style.visibility = 'hidden';
+    gameOver.style.position = 'absolute';
+    mainMenu.style.visibility = 'hidden';
+    mainMenu.style.position = 'absolute';
     background.scroll = 0;
+
+    scrollSpeed = 3;
+    gravity = 1;
+    jumpMultiplier = 1;
 
     player.score = 0
     player.multiplier = 1;
@@ -119,6 +127,8 @@ function start_tutorial(){
 }    
 
 btn_start.addEventListener('click', startGame);
+
+btn_retry.addEventListener('click', startGame);
 
 btn_instruction.addEventListener('click', start_tutorial);
 

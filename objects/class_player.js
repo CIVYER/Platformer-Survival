@@ -159,7 +159,7 @@ class Player{
                 if(this.velocity.y > 0){
                     this.onPlat = true;
                     this.onGround = true; 
-                    this.velocity.y = 3;
+                    this.velocity.y = scrollSpeed;
                     this.position.y = colBlock.top - this.height - 0.01
                 }
             }
@@ -170,7 +170,7 @@ class Player{
                 if(this.velocity.y > 0){
                     this.onPlat = true;
                     this.onGround = true; 
-                    this.velocity.y = 3;
+                    this.velocity.y = scrollSpeed;
                     this.position.y = colBlock2.top - this.height - 0.01
                 }
             }
@@ -181,7 +181,7 @@ class Player{
                 if(this.velocity.y > 0){
                     this.onPlat = true;
                     this.onGround = true; 
-                    this.velocity.y = 3;
+                    this.velocity.y = scrollSpeed;
                     this.position.y = colBlock3.top - this.height - 0.01
                 }
             }
@@ -191,7 +191,6 @@ class Player{
     }
     drawScore(){
         this.multiplierTimer+=1;
-        console.log(this.multiplierTimer)
         if(this.multiplier > 1){
             if(this.currMultiplier != this.multiplier){
                 this.multiplierTimer = 0;
@@ -248,7 +247,7 @@ class Player{
             this.onGround = true;
         }
         if (this.top + this.velocity.y - 1 < -50) {
-            this.velocity.y = 3
+            this.velocity.y = scrollSpeed;
             this.onGround = false;
         }
         if(!(this.hasWeapon) && collision_all_solid({
